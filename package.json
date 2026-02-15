@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "animejs": "^4.2.2",
+    "echarts": "^6.0.0"
+  }
+}

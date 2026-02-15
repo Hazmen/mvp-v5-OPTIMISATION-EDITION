@@ -1,0 +1,78 @@
+/* =========================================
+   ЗИМНИЙ ГРАДИЕНТНЫЙ ФОН + АНИМИРОВАННЫЙ СНЕГ
+========================================= */
+
+/* --- Базовые стили для body --- */
+body {
+    /* Устанавливаем цветовую схему (светлая/темная) */
+    color-scheme: light dark;
+
+    /* Устанавливаем основной фон страницы - зимний градиент */
+    background:
+        radial-gradient(
+            circle at 50% 120%,
+            rgba(255, 255, 255, 0.05) 0%,
+            rgba(255, 255, 255, 0) 60%
+        ),
+        radial-gradient(
+            circle at 80% 0%,
+            rgba(162, 0, 255, 0.25) 0%,
+            rgba(0, 0, 0, 0) 50%
+        ),
+        radial-gradient(
+            circle at 20% -10%,
+            rgba(255, 200, 255, 0.25) 0%,
+            rgba(0, 0, 0, 0) 45%
+        ),
+        linear-gradient(
+            to bottom,
+            #120a1e 0%,
+            #180b24 30%,
+            #14081f 60%,
+            #110516 100%
+        );
+
+    /* Устанавливаем минимальную высоту страницы равной высоте окна браузера */
+    min-height: 100vh;
+
+    /* Отключаем горизонтальную прокрутку */
+    overflow-x: auto;
+
+    /* Убедимся, что фон не прокручивается при прокрутке контента */
+    background-attachment: fixed;
+}
+
+/* --- АНИМИРОВАННЫЙ СНЕГ --- */
+.snow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    z-index: 1000; /* Помещаем над всем контентом */
+    pointer-events: none; /* Не блокируем клики */
+
+    background: none;
+    background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/191814/flake1.png"),
+                    url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/191814/flake2.png"),
+                    url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/191814/flake3.png");
+    background-repeat: repeat;
+    background-size: 600px 600px;
+
+    /* Запускаем анимацию снега */
+    animation: snow 10s linear infinite;
+}
+
+/* --- КЛЮЧЕВЫЕ КАДРЫ ДЛЯ АНИМАЦИИ СНЕГА --- */
+@keyframes snow {
+    0% {
+        background-position: 0px 0px, 0px 0px, 0px 0px;
+    }
+    50% {
+        background-position: 500px 500px, 100px 200px, -100px 150px;
+    }
+    100% {
+        background-position: 500px 1000px, 200px 400px, -100px 300px;
+    }
+}

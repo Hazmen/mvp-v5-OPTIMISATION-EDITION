@@ -1,0 +1,71 @@
+.settings-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background-color: #4b008d; /* Серый фон кнопки */
+    border: none;
+    border-radius: 50%; /* Круглая кнопка */
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+    transition: transform 0.3s ease, background-color 0.2s ease;
+}
+
+.settings-toggle:hover {
+    background-color: #62009a; /* Светлее при наведении */
+}
+
+.settings-toggle svg {
+    width: 24px;
+    height: 24px;
+    fill: #fff; /* Цвет шестеренки */
+}
+
+.settings-panel {
+    position: fixed;
+    bottom: 80px; /* Располагаем над кнопкой */
+    right: 20px;
+    width: 300px; /* Можно до 450px */
+    max-width: 450px;
+    background-color: #3e0055; /* Светлее, чем фон body, но темнее кнопки */
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    transform: translateY(20px); /* Начальное положение скрыто */
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s;
+    z-index: 1000;
+}
+
+.settings-panel.active {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+.settings-section {
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-section h3 {
+    margin: 0 0 5px 0;
+    font-size: 1em;
+    color: #ddd;
+}
+
+.settings-content {
+    padding: 10px;  
+    background-color: #1c0032;
+    border-radius: 4px;
+    font-size: 0.9em;
+    color: #bbb;
+}
+
+

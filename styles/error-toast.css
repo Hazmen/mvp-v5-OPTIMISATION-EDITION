@@ -1,0 +1,134 @@
+@font-face {
+    font-family: trebuchet;
+    src: url("fonts/windows-xp-message-title-trebuchet-ms.otf");
+}
+
+@font-face {
+    font-family: pixelFont;
+    src: url("fonts/PixgamerRegular-OVD6A.ttf");
+}
+
+/* ===== WINDOW ===== */
+
+#errorWindow {
+    width: min(400px, 92vw);
+    border-radius: 5px 5px 0 0;
+    background: #4300E5;
+    padding: 4px;
+    image-rendering: pixelated;
+
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== TITLE BAR ===== */
+
+.main-error-layer {
+    font-family: trebuchet;
+    color: white;
+    font-weight: 1000;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 4px 6px;
+}
+
+.main-error-layer h2 {
+    margin: 0;
+    font-size: clamp(18px, 4vw, 22px);
+    text-shadow: 2px 1px black;
+}
+
+.close-error-win {
+    width: 32px;
+    height: 32px;
+    background: none;
+    border: none;
+    cursor: not-allowed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===== CONTENT ===== */
+
+.second-error-layer {
+    background: #EBE9D8;
+    font-family: pixelFont;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 10px;
+    gap: 12px;
+
+    /* ВАЖНО: растёт внутрь окна */
+    flex-grow: 1;
+}
+
+/* ===== MESSAGE ===== */
+
+.info-layer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.info-layer img {
+    flex-shrink: 0;
+}
+
+.info-layer h3 {
+    margin: 0;
+    color: #1e1e1e;
+    font-weight: 100;
+
+    font-size: clamp(14px, 3.5vw, 18px);
+    line-height: 1.2;
+}
+
+/* ===== BUTTON ===== */
+
+.ok-btn-div {
+    margin-top: auto; /* 🔥 КЛЮЧ */
+    display: flex;
+    justify-content: center;
+}
+
+.ok-btn-cover {
+    border: 1px solid black;
+}
+
+.ok-btn {
+    width: 80px;
+    height: 25px;
+
+    font-family: pixelFont;
+    background: none;
+    border: 1px solid white;
+    border-right: 2px solid grey;
+    border-bottom: 2px solid grey;
+
+    cursor: pointer;
+    color: #272D2A;
+}
+
+/* ===== MOBILE TWEAKS ===== */
+
+@media (max-width: 360px) {
+    .info-layer {
+        align-items: flex-start;
+    }
+
+    .info-layer img {
+        width: 32px;
+        height: 32px;
+    }
+
+    .ok-btn {
+        width: 70px;
+        height: 24px;
+    }
+}
