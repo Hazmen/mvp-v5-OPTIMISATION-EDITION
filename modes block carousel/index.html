@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modes</title>
+    <script src="./node_modules/echarts/dist/echarts.min.js"></script>
+    <link rel="stylesheet" href="/styles/celeste-like-bg2.css">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="carousel-toogle">
+        <h3>Toogle Modes</h3>
+
+        <div class="arrows-layer">
+            <button class="toogle-left toogle-arrow">‹</button>
+            <div class="toogle-label modes-label"></div>
+            <button class="toogle-right toogle-arrow">›</button>
+        </div>
+        <div class="dots-layer">
+            <div class="dot-toogle1 mode-dot"></div>
+            <div class="dot-toogle2 mode-dot"></div>
+            <div class="dot-toogle3 mode-dot"></div>
+            <!-- <div class="dot-toogle4 mode-dot"></div> -->
+        </div>
+    </div>
+    <!-- VISUALISATION MODES -->
+    <div class="vis-modes-area">
+
+        <div class="vis-mode active" data-mode="casual">
+            <div class="casual-mode-main-area">
+                <img src="/assets/close.jpg" alt="">
+            </div>
+        </div>
+
+        <div class="vis-mode" data-mode="linear">
+            <div class="chart-mode-main-area">
+                <img src="/assets/close.jpg" alt="">
+            </div>
+        </div>
+
+        <div class="vis-mode" data-mode="map">
+            <div class="open-map-mode-main-area">
+                <img src="/assets/close.jpg" alt="">
+            </div>
+        </div>
+
+        <!-- <div class="vis-mode" data-mode="log">
+            <div class="log-mode-main-area">
+            </div>
+        </div> -->
+
+    </div>
+    <script src="index.js"></script>
+</body>
+</html>

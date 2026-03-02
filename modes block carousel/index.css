@@ -1,0 +1,168 @@
+@font-face {
+  font-family: ultrasheet;
+  src: url("/styles/fonts/SegoePro-Bold.ttf");
+}
+
+body {
+  color: white;
+}
+
+.vis-modes-area {
+  --side-gap: 30px;         
+  --block-height: 450px;    
+  --min-height: 520px;      
+  --max-height: 95vh;       
+
+  --bg-dark: #120016;       
+  --bg-deeper: #0a000e;     
+  --grid-size: 121px;
+  --grid-line: color-mix(in hsl, #ffffff, transparent 82%);
+
+  width: calc(100% - (var(--side-gap) * 2));
+  height: clamp(var(--min-height), var(--block-height), var(--max-height));
+  margin-inline: auto;
+  margin: 30px 0px 30px 30px;
+  
+  position: relative;
+  overflow: hidden;
+
+  display: flex;
+  justify-content: center;
+
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in hsl, var(--bg-dark), black 1%),
+      var(--bg-deeper)
+    );
+
+  border: 1px solid color-mix(in hsl, black, #ffffff 12%);
+  border-radius: 20px;
+
+  box-shadow:
+    0 18px 25px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.vis-modes-area::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--grid-line) .5px,
+      transparent 1px var(--grid-size)
+    )
+    calc(var(--grid-size) * 0.36) 50% /
+    var(--grid-size) var(--grid-size),
+
+    linear-gradient(
+      var(--grid-line) 1px,
+      transparent 1px var(--grid-size)
+    )
+    0 calc(var(--grid-size) * 0.32) /
+    var(--grid-size) var(--grid-size);
+
+  mask: linear-gradient(-50deg, transparent 20%, white);
+
+  pointer-events: none;
+  z-index: 0;
+}
+
+.vis-modes-area > * {
+  position: relative;
+  z-index: 0;
+}
+
+.carousel-toogle {
+  font-family: Arial;
+  font-size: 18px;
+  text-align: center;
+}
+
+.arrows-layer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+}
+
+.toogle-arrow {
+  all: unset;
+  display: inline-block;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  font-size: 28px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  border: 5px solid transparent;
+  width: 40px;
+  text-align: center;
+
+  transform: translateZ(0);
+  backface-visibility: hidden;
+
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.toogle-arrow:hover {
+  color: white;
+  transform: scale(1.15);
+}
+
+.modes-label {
+  color: white;
+  font-weight: 600;
+  letter-spacing: 2px;
+  font-size: 26px;
+  font-family: ultrasheet;
+  flex: 0 1 auto;
+  white-space: nowrap;
+
+  /* Add fixed width for consistency */
+  min-width: 180px; /* Adjust as necessary */
+  max-width: 180px;
+  text-align: center;
+}
+
+.dots-layer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.mode-dot {
+  border-radius: 50%;
+  width: 9px;
+  height: 9px;
+  border: 2px solid rgba(195, 195, 195, 0.6);
+  cursor: pointer;
+  aspect-ratio: 1/1;
+
+  transition: all 0.2s ease;
+}
+
+.mode-dot:hover {
+  border-color: white !important;
+  transform: scale(1.1) !important;
+}
+
+.vis-mode {
+  display: none;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+}
+
+.vis-mode.active {
+  display: block;
+}
+

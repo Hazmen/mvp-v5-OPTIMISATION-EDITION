@@ -224,6 +224,7 @@ label[for="calc-speed"] {
 .calcResultsBlock {
     scrollbar-width: thin;
     scrollbar-color: #6a0dad rgba(197, 112, 247, 0.05);
+    border-radius: 0px 0px 20px 0px !important;
 }
 
 @supports (scrollbar-color: red blue) {
