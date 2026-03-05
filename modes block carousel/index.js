@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Конфигурация режимов
     const modes = [
         { id: 'casual', name: 'Casual' },
-        { id: 'linear', name: 'Linear Graph' },
+        { id: 'linear', name: 'Graph' },
         { id: 'map', name: 'Map' }
     ];
     

@@ -1,0 +1,137 @@
+:root {
+    --grad-main: linear-gradient(135deg, #4a0090, #880083);
+    --border-main: rgb(147, 0, 205);
+    --inner-bg: linear-gradient(135deg, #36005f, #5a0056);
+    --border-light: rgb(190, 120, 255);
+}
+
+#centerLine {
+    position: fixed;
+    background-color: white;
+    opacity: 0.3;
+    z-index: 9999;
+    pointer-events: none;
+    /* display: none; */
+}
+
+.test-vis-modes-area {
+  --side-gap: 30px;         
+  --bg-dark: #120016;       
+  --bg-deeper: #0a000e;     
+  --grid-size: 121px;
+  --grid-line: color-mix(in hsl, #ffffff, transparent 82%);
+
+  width: calc(100% - (var(--side-gap) * 2));
+  min-height: 575px;        /* Вместо height: clamp */
+  height: auto;             /* Растягивается под контент */
+  margin: 30px 0px 30px 30px;
+  
+  position: relative;
+  
+  display: flex;
+  flex-direction: column;   /* Меняем на column */
+  /* Убираем justify-content: center */
+
+  padding: 10px;            /* Добавляем внутренние отступы */
+  box-sizing: border-box;   /* Чтобы padding не увеличивал ширину */
+
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in hsl, var(--bg-dark), black 1%),
+      var(--bg-deeper)
+    );
+
+  border: 1px solid color-mix(in hsl, black, #ffffff 12%);
+  border-radius: 25px;
+
+  box-shadow:
+    0 18px 25px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+
+
+/* Остальное без изменений */
+.test-vis-modes-area::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--grid-line) .5px,
+      transparent 1px var(--grid-size)
+    )
+    calc(var(--grid-size) * 0.36) 50% /
+    var(--grid-size) var(--grid-size),
+
+    linear-gradient(
+      var(--grid-line) 1px,
+      transparent 1px var(--grid-size)
+    )
+    0 calc(var(--grid-size) * 0.32) /
+    var(--grid-size) var(--grid-size);
+
+  mask: linear-gradient(-50deg, transparent 20%, white);
+
+  pointer-events: none;
+  z-index: 0;
+}
+
+.test-vis-modes-area > * {
+  position: relative;
+  z-index: 0;
+}
+
+h1, h2 {
+    font-family: Arial; 
+    text-align: center;
+}
+
+.chart-itself {
+    margin: 15px;
+    margin-bottom: 5px;
+    min-width: 300px;
+    min-height: 150px;
+    max-width: 600px;
+    max-height: 350px;
+    width: 1000px;
+    height: 1000px;
+    border-radius: 14px;
+
+    background: none;
+    border: 2px solid var(--border-main);
+    justify-self: left;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.05),
+        0 4px 12px rgba(0,0,0,0.35);
+}
+
+.chart-itself-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.test-2 {
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-stats-bottom {
+  display: flex;
+  flex-direction: row;
+}
+
+.cs-block {
+  width: 250px;
+  height: 175px;
+  border: 1px solid --bg-dark;
+  margin: 15px;
+  margin-bottom: 15px;   
+  border-radius: 20px;
+  background: white;
+}
+

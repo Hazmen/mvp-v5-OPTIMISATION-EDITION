@@ -10,7 +10,7 @@ body {
 .vis-modes-area {
   --side-gap: 30px;         
   --block-height: 450px;    
-  --min-height: 520px;      
+  --min-height: 720px;      
   --max-height: 95vh;       
 
   --bg-dark: #120016;       
@@ -97,17 +97,19 @@ body {
   cursor: pointer;
   flex-shrink: 0;
 
-  font-size: 28px;
+  font-size: 40px;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.6);
-  border: 5px solid transparent;
+  border: 10px solid transparent;
+  border-radius: 50%;
+  aspect-ratio: 1/1;
   width: 40px;
   text-align: center;
 
-  transform: translateZ(0);
+  transform-origin: center;
   backface-visibility: hidden;
 
-  transition: color 0.2s ease, transform 0.2s ease;
+  transition: color 0.5s ease, transform 0.2s ease;
 }
 
 .toogle-arrow:hover {
