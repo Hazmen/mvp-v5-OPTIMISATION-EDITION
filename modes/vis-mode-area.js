@@ -1,79 +1,112 @@
+// Конфигурация режимов
 const modes = [
-    { id: 'casual', title: 'Casual' },
-    { id: 'linear', title: 'Linear chart' },
-    { id: 'log', title: 'Log chart' },
-    { id: 'map', title: 'Map' }
+    { id: 'casual', name: 'Casual' },
+    { id: 'linear', name: 'Graph' },
+    { id: 'map', name: 'Map' }
 ];
 
-let currentModeIndex = 0;
+let currentIndex = 0;
+const totalModes = modes.length;
 
-const modeNameEl = document.getElementById('current-mode-name');
+// Элементы DOM
+const modeLabel = document.querySelector('.modes-label');
+const leftArrow = document.querySelector('.toogle-left');
+const rightArrow = document.querySelector('.toogle-right');
 const dotsContainer = document.getElementById('modes-dots');
-const modeBlocks = document.querySelectorAll('.vis-mode');
+const visModes = document.querySelectorAll('.vis-mode');
 
+// Создаём точки
 function createDots() {
     dotsContainer.innerHTML = '';
 
     modes.forEach((_, index) => {
-        const dot = document.createElement('span');
+        const dot = document.createElement('div');
         dot.classList.add('mode-dot');
 
-        if (index === currentModeIndex) {
-            dot.classList.add('active');
+        if (index === 0) {
+            dot.style.backgroundColor = 'white';
+            dot.style.borderColor = 'white';
+        } else {
+            dot.style.backgroundColor = 'transparent';
+            dot.style.borderColor = 'rgba(195, 195, 195, 0.6)';
         }
 
         dot.addEventListener('click', () => {
-            switchMode(index);
+            updateMode(index);
         });
 
         dotsContainer.appendChild(dot);
     });
 }
 
-function switchMode(newIndex) {
-    if (newIndex < 0) newIndex = modes.length - 1;
-    if (newIndex >= modes.length) newIndex = 0;
+// Функция обновления интерфейса
+function updateMode(index) {
+    // Нормализуем индекс для бесконечной карусели
+    const normalizedIndex = ((index % totalModes) + totalModes) % totalModes;
 
-    const oldModeId = modes[currentModeIndex].id;
-    const newModeId = modes[newIndex].id;
+    // Обновляем текст
+    modeLabel.textContent = modes[normalizedIndex].name;
 
-    const oldEl = document.querySelector(`[data-mode="${oldModeId}"]`);
-    const newEl = document.querySelector(`[data-mode="${newModeId}"]`);
-
-    if (!oldEl || !newEl) {
-        console.error('Mode element not found:', oldModeId, newModeId);
-        return;
-    }
-
-    oldEl.classList.remove('active');
-    newEl.classList.add('active');
-
-    modeNameEl.classList.add('switching');
-
-    setTimeout(() => {
-        modeNameEl.textContent = modes[newIndex].title;
-        modeNameEl.classList.remove('switching');
-    }, 100);
-
-    currentModeIndex = newIndex;
-    updateDots();
-}
-
-
-
-function updateDots() {
-    document.querySelectorAll('.mode-dot')
-        .forEach((dot, i) => {
-            dot.classList.toggle('active', i === currentModeIndex);
-        });
-}
-
-document.querySelectorAll('.mode-arrow').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const dir = Number(btn.dataset.dir);
-        switchMode(currentModeIndex + dir);
+    // Обновляем точки
+    const dots = document.querySelectorAll('.mode-dot');
+    dots.forEach((dot, i) => {
+        if (i === normalizedIndex) {
+            dot.style.backgroundColor = 'white';
+            dot.style.borderColor = 'white';
+            dot.style.transform = 'scale(1.0)';
+        } else {
+            dot.style.backgroundColor = 'transparent';
+            dot.style.borderColor = 'rgba(195, 195, 195, 0.6)';
+            dot.style.transform = 'scale(1)';
+        }
     });
+
+    // Обновляем видимый режим визуализации
+    visModes.forEach((mode) => {
+        const modeId = mode.dataset.mode;
+        if (modeId === modes[normalizedIndex].id) {
+            mode.style.display = 'block';
+            mode.style.animation = 'fadeIn 0.3s ease';
+        } else {
+            mode.style.display = 'none';
+        }
+    });
+
+    currentIndex = normalizedIndex;
+}
+
+// Обработчики стрелок
+leftArrow.addEventListener('click', () => {
+    updateMode(currentIndex - 1);
 });
 
+rightArrow.addEventListener('click', () => {
+    updateMode(currentIndex + 1);
+});
+
+// Добавляем анимацию появления в CSS
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fadeIn {
+        from { opacity: 0.3; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+    }
+
+    .vis-mode {
+        transition: opacity 0.3s ease;
+    }
+`;
+document.head.appendChild(style);
+
+// Инициализация
 createDots();
-switchMode(0);
+updateMode(0);
+
+// Обработка клавиатуры
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') {
+        leftArrow.click();
+    } else if (e.key === 'ArrowRight') {
+        rightArrow.click();
+    }
+});

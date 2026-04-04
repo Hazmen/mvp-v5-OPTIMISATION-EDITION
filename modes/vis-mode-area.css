@@ -3,6 +3,11 @@
     src: url('/styles/fonts/SegoePro-Bold.ttf');
 }
 
+@font-face {
+    font-family: ultrasheet;
+    src: url('/styles/fonts/PixgamerRegular-OVD6A.ttf');
+}
+
 /* =========================
    MODES TITLE
 ========================= */
@@ -17,82 +22,86 @@
 }
 
 /* =========================
-   SWITCHER (arrows + title)
+   CAROUSEL TOOGLE
 ========================= */
 
-.modes-switcher {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 24px;
-
-    user-select: none;
-    margin-bottom: 12px;
+.carousel-toogle {
+    font-family: Arial;
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-.mode-arrow {
-    all: unset;
-    cursor: pointer;
+.arrows-layer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
 
-    font-size: 28px;
+.toogle-arrow {
+    all: unset;
+    display: inline-block;
+    cursor: pointer;
+    flex-shrink: 0;
+
+    font-size: 40px;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.6);
+    border: 10px solid transparent;
+    border-radius: 50%;
+    aspect-ratio: 1/1;
+    width: 40px;
+    text-align: center;
 
-    transition: 
-        color 0.2s ease,
-        transform 0.2s ease;
+    transform-origin: center;
+    backface-visibility: hidden;
+
+    transition: color 0.5s ease, transform 0.2s ease;
 }
 
-.mode-arrow:hover {
+.toogle-arrow:hover {
     color: white;
     transform: scale(1.15);
 }
 
-.mode-title {
-    min-width: 160px;
-    text-align: center;
-
-    font-family: kamerik;
-    font-size: 18px;
-    letter-spacing: 1px;
+.modes-label {
     color: white;
+    font-weight: 600;
+    letter-spacing: 2px;
+    font-size: 26px;
+    font-family: Arial, Helvetica, sans-serif;
+    flex: 0 1 auto;
+    white-space: nowrap;
+
+    min-width: 180px;
+    max-width: 180px;
+    text-align: center;
 }
 
-/* =========================
-   DOTS
-========================= */
-
-.modes-dots {
+.dots-layer {
     display: flex;
+    flex-direction: row;
     justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
+    align-items: center;
+    gap: 8px;
 }
 
 .mode-dot {
-    width: 8px;
-    height: 8px;
-
     border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.35);
-
+    width: 9px;
+    height: 9px;
+    border: 2px solid rgba(195, 195, 195, 0.6);
     cursor: pointer;
-    transition:
-        background 0.25s ease,
-        transform 0.25s ease,
-        opacity 0.25s ease;
+    aspect-ratio: 1/1;
 
-    opacity: 0.5;
+    transition: all 0.2s ease;
 }
 
 .mode-dot:hover {
-    transform: scale(1.3);
-    opacity: 0.8;
-}
-
-.mode-dot.active {
-    background: white;
-    opacity: 1;
+    border-color: white !important;
+    transform: scale(1.1) !important;
 }
 
 /* =========================
@@ -116,27 +125,13 @@
 ========================= */
 
 .vis-mode {
+    display: none;
+    width: 100%;
+    height: 100%;
     position: absolute;
     inset: 0;
-
-    opacity: 0;
-    transform: translateX(40px);
-    pointer-events: none;
-
-    transition:
-        opacity 0.35s ease,
-        transform 0.35s ease;
 }
 
 .vis-mode.active {
-    opacity: 1;
-    transform: translateX(0);
-    pointer-events: auto;
-}
-
-#current-mode-name {
-    display: inline-block;
-    transition:
-        transform 0.2s ease,
-        opacity 0.2s ease;
+    display: block;
 }
