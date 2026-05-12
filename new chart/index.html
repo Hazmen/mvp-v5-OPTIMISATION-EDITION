@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collatz Explorer</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-panel">
+        <header class="app-header">
+            <h1 class="app-title">Collatz Explorer</h1>
+
+            <label class="log-toggle">
+                <input type="checkbox" id="log_on">
+                Log Scale
+            </label>
+        </header>
+
+        <div class="controls">
+            <input type="text" id="input" value="27" placeholder="Enter number">
+            <button id="runBtn" class="runBtn"><img src="/svgs/play_icon.svg" alt="" style="filter: invert(); margin-left: .5px;"></button>
+        </div>
+
+        <div class="chart-wrap">
+            <div id="chart"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

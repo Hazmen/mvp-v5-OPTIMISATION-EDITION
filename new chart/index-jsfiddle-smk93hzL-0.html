@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JSFiddle smk93hzL</title>
+
+  <style>
+    		.chart-block {
+			width: 500px;
+			height: 300px;
+			border: 2px solid black;
+			margin-top: 20px;
+		}
+
+  </style>
+
+  
+</head>
+<body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/6.0.0/echarts.min.js"></script>
+<input type="text" class="inp" id="input" value="9663" placeholder="Number">
+<input type="checkbox" id="log_on"> Log scale
+<button class="play" id="run">Run</button>
+
+<div class="chart-block" id="chart"></div>
+
+
+  <script>
+    const inp = document.getElementById('input');
+const logChk = document.getElementById('log_on');
+const runBtn = document.querySelector('.play');
+const chartEl = document.getElementById('chart');
+
+chartEl.style.width = '500px';
+chartEl.style.height = '300px';
+
+/* ===== input filter  (NUMBERS ONLY (so you can input infinite amount of nums)) ===== */
+inp.addEventListener('beforeinput', e => {
+	if (e.data && !/^[0-9]+$/.test(e.data)) {
+		e.preventDefault();
+	}
+});
+
+/* ===== Collatz calculations BigInt ONLY ===== */
+function collatzBigInt(n) {
+	const spisok = [];
+	
+	if (n === 0n) return spisok;
+	
+	while (true) {
+		spisok.push(n);
+		if (n === 1n) break;
+		
+		if (n % 2n === 0n) {
+			n = n / 2n;
+		} else {
+			n = n * 3n + 1n;
+		}
+		
+		if (spisok.length > 20000) break;
+	}
+	
+	return spisok;
+};
+
+/* ===== graph compiler (BigInt -> Number) ===== */
+function graphLogSize(value) {
+	const s = value.toString();
+	const k = 15;
+	
+	if (s.length <= k) {
+		return Math.log10(Number(s));
+	}
+	
+	const lead = Number(s.slice(0, k));
+	return Math.log10(lead) + (s.length - k);
+}
+
+// function log10n(value){
+// 	if(value == 0n){return -Infinity;}
+// 	if(value < 0n){throw new Error('negative argument')}
+// 	const s = value.toString().replace(/n$/, '');
+// 	return s.length + Math.log10(Number('0.'+s));
+// }
+
+/* ===== make nums short (for tooltip) ===== */
+function toolTipShorten(value) {
+	const s = value.toString();
+	if (s.length <= 15) return s;
+	return s.slice(0, 6) + '...' + s.slice(-6);
+} // now its like 12345678901234567890 (big number) -> 123456...567890
+
+/* ===== y-axis formatter (almost like function above this but for Yaxis) ===== */
+function formatOriginalForAxis(value, sig = 2) {
+	const s = value.toString();
+	if (s.length <= sig) return s;
+	
+	const exp = s.length - 1;
+	const lead = Number(s.slice(0, sig));
+	const mant = (lead / Math.pow(10, sig - 1)).toFixed(2).replace(/\.0+$/, '');
+	return `${mant}e+${exp}`;
+}
+
+/* ===== ECharts ===== */
+const chart = echarts.init(chartEl, 'dark');
+
+function renderGraph(spisok, logOn) {
+	//const nums = spisok.map(graphLogSize);
+	let scaleFactor = 1, nums;
+	if(logOn){
+		nums = spisok.map(graphLogSize);
+	}
+	else{
+		let max = 0n;
+		spisok.forEach(x => {max = x > max ? x : max});
+		const scaleExponent = Math.floor(graphLogSize(max)) - 4; // precision 10^(-4)
+		scaleFactor = 10n ** BigInt(Math.max(0, scaleExponent));
+		nums = spisok.map(x => Number(x/scaleFactor));
+	}
+	
+	const option = {
+		title: { text: 'Linear chart' },
+		
+		// tooltip (for chosen dot's info)
+		tooltip: {
+			trigger: 'axis',
+			formatter(params) {
+				const i = params[0].dataIndex;
+				const v = spisok[i];
+				const even = v % 2n === 0n;
+				return `
+			Step: ${i}<br>
+			Value: ${toolTipShorten(v)} ${nums[i]}<br>
+			Operation: ${even ? '/ 2' : '* 3 + 1'}
+		`;
+			}
+		},
+		
+		
+		// zoom, save and all that stuff
+		toolbox: {
+			feature: {
+				dataZoom: {
+					yAxisIndex: 'none'
+				},
+				restore: {},
+				saveAsImage: {}
+			}
+		},
+		
+		dataZoom: [
+			{
+				type: 'inside',
+				start: 0,
+				end: 100
+			},
+			{
+				start: 0,
+				end: 10
+			}
+		],
+		
+		
+		// horizontal axis
+		xAxis: {
+			type: 'category',
+			boundaryGap: false,
+			data: spisok.map((_, i) => i)
+		},
+		
+		// vertical axis
+		yAxis: {
+			type: 'value',
+			axisLabel: {
+				formatter(v) {
+					if(!logOn){
+						return formatOriginalForAxis(BigInt(v) * scaleFactor);
+					}
+					const real = Math.pow(10, v);
+					
+					// small nums - normal
+					if (real < 1000) {
+						return Math.round(real).toString();
+					}
+					
+					// medium size nums - shorten
+					if (real < 1e6) {
+						return real.toFixed(0);
+					}
+					
+					// big nums - smth like 1e324
+					const exp = Math.floor(v);
+					const mant = Math.pow(10, v - exp).toFixed(2).replace(/\.0+$/, '');
+					return `${mant}e+${exp}`;
+				}
+			}
+		},
+		
+		// doesnt matter i guess
+		series: [{
+			type: 'line',
+			data: nums,
+			//smooth: 0,
+			lineStyle: {
+				width: 1,
+			},
+			showSymbol: true,
+			symbolSize: 6
+		}]
+	};
+	
+	chart.setOption(option, true);
+}
+
+
+/* ===== run ===== */
+runBtn.addEventListener('click', () => {
+	if (!inp.value) return;
+	
+	const n = BigInt(inp.value);
+	const spisok = collatzBigInt(n);
+	const logOn = logChk.checked;
+	renderGraph(spisok, logOn);
+});
+
+// let overallMax = 0n;
+// for(let n = 27; n < 10000; n++){
+// 	const col = collatzBigInt(BigInt(n));
+// 	let max = 0n;
+// 	col.forEach(x => {max = x > max ? x : max});
+// 	if(max > overallMax){
+// 		overallMax = max;
+// 		console.log(n, max, col.length);
+// 	}
+// }
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,179 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #0f0518;
+    min-height: 100vh;
+    margin: 0;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: radial-gradient(ellipse at top, rgba(88, 28, 135, 0.4), #0f0518 45%);
+}
+
+.app-panel {
+    width: 100%;
+    max-width: 1100px;
+    background: rgba(30, 15, 45, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(168, 85, 247, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    border-radius: 20px;
+    overflow: hidden;
+    padding: 24px;
+}
+
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.app-title {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(to right, #e9d5ff, #c084fc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.log-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #d8b4fe;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.chart-wrap {
+    width: 100%;
+}
+
+#chart {
+    width: 100%;
+    height: 350px;
+    aspect-ratio: 5/1;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(216, 26, 232, 0.25);
+    /* transform: scale(.3); */
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1a0b2e;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #4c1d95;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #6d28d9;
+}
+
+/* Твой существующий код остаётся, просто добавляем/исправляем: */
+
+.controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+    align-items: center;
+}
+
+/* Стилизация инпута — убираем чёрные рамки и делаем красиво */
+#input {
+    background: rgba(20, 10, 35, 0.7);
+    border: 1px solid rgba(139, 92, 246, 0.4);
+    border-radius: 40px;
+    padding: 12px 5px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #f0e6ff;
+    font-family: 'Inter', monospace;
+    width: 140px;
+    transition: all 0.2s ease;
+    outline: none;
+    text-align: center;
+}
+
+#input:focus {
+    border-color: #c084fc;
+    box-shadow: 0 0 12px rgba(192, 132, 252, 0.3);
+    background: rgba(30, 15, 50, 0.9);
+}
+
+#input::placeholder {
+    color: #5a3e7c;
+}
+
+/* Стилизация кнопки Run — делаем её неоморфной/стеклянной как в твоём референсе */
+.runBtn {
+    background: rgba(30, 15, 50, 0.7);
+    border: 1px solid rgba(139, 92, 246, 0.5);
+    border-radius: 60px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.runBtn:hover {
+    background: rgba(139, 92, 246, 0.2);
+    border-color: #c084fc;
+    transform: scale(1.02);
+    box-shadow: 0 0 12px rgba(192, 132, 252, 0.4);
+}
+
+.runBtn:active {
+    transform: scale(0.96);
+}
+
+/* Дополнительно: если хочешь, чтобы чекбокс Log Scale выглядел лучше */
+.log-toggle input {
+    width: 18px;
+    height: 18px;
+    accent-color: #a855f7;
+    cursor: pointer;
+}
+
+/* Адаптив для маленьких экранов */
+@media (max-width: 500px) {
+    .app-panel {
+        padding: 16px;
+    }
+    
+    .app-title {
+        font-size: 1.5rem;
+    }
+    
+    #input {
+        width: 100px;
+        padding: 8px 14px;
+    }
+    
+    .runBtn {
+        width: 42px;
+        height: 42px;
+    }
+}
