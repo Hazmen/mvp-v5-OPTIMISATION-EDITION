@@ -381,7 +381,7 @@ function processDelayCalc(list) {
 
 
 const updateInpValue = () => {
-    inpValue = BigInt(inp.value || '0');
+    inpValue = BigInt(inp.value || '');
     firstNumberLengthBlock.innerText = String(inpValue).length + ' digits';
     firstNumberDisplay.innerText = String(inpValue);
 
