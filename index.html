@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="styles/vis-area.css">
 
     <!-- Подключаем CSS для работы области отображения данных (vis-mode-area) и работы самих режимов -->
-    <link rel="stylesheet" href="modes/vis-mode-area.css">
+    <link rel="stylesheet" href="styles/vis-mode-area.css">
 
 </head>
 <body>
@@ -58,7 +58,7 @@
     <div class="carousel-toogle">
         <div class="arrows-layer">
             <button class="toogle-left toogle-arrow">‹</button>
-            <div class="toogle-label modes-label">Casual</div>
+            <div class="toogle-label modes-label"></div>
             <button class="toogle-right toogle-arrow">›</button>
         </div>
         <div class="dots-layer" id="modes-dots"></div>
@@ -68,7 +68,23 @@
     <!-- VISUALISATION MODES -->
     <div class="vis-modes-area">
 
-        <div class="vis-mode active" data-mode="casual">
+        <div class="vis-mode active" data-mode="sequence">
+            
+        </div>
+
+        <div class="vis-mode active" data-mode="chart">
+            
+        </div>
+
+        <div class="vis-mode active" data-mode="chain">
+            
+        </div>
+
+        <div class="vis-mode active" data-mode="map">
+            
+        </div>
+
+        <!-- <div class="vis-mode active" data-mode="casual">
             <div class="casual-mode-main-area"></div>
         </div>
 
@@ -80,7 +96,7 @@
 
         <div class="vis-mode" data-mode="map">
             <div class="open-map-mode-main-area"></div>
-        </div>
+        </div> -->
 
     </div>
 
@@ -246,7 +262,7 @@
     </div>
 
     <!-- <script src="input-buttons.js"></script> -->
-     <script src="modes/vis-mode-area.js" defer></script>
+     <script src="scripts/modes/vis-mode-area.js" defer></script>
     <script src="scripts/main.js" defer></script>
     <script src="scripts/modals.js" defer></script>
 </body>

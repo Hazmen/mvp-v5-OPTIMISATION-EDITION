@@ -1,7 +1,8 @@
 // Конфигурация режимов
 const modes = [
-    { id: 'casual', name: 'Casual' },
-    { id: 'linear', name: 'Graph' },
+    { id: 'sequence', name: 'Sequence' },
+    { id: 'chart', name: 'Graph' },
+    { id: 'chain', name: 'Chain' },
     { id: 'map', name: 'Map' }
 ];
 
