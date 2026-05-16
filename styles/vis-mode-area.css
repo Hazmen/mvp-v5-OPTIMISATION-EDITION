@@ -108,7 +108,7 @@
    VISUAL MODES AREA
 ========================= */
 
-.vis-modes-area {
+.modes-container {
     position: relative;
     width: 100%;
     max-width: 900px;

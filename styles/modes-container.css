@@ -1,0 +1,27 @@
+.modes-container {
+    /* размеры области */
+    height: 100vh;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    
+    /* все остальное */
+
+
+    /* чоб видел */
+    border: 1px solid white;
+}
+
+body {
+    padding: 1;
+    margin: 1;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Для браузера Firefox */
+html {
+  scrollbar-width: none;
+}
