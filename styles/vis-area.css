@@ -1,45 +1,31 @@
 .vis-modes-area {
-  /* ===== НАСТРАИВАЕМЫЕ ПАРАМЕТРЫ ===== */
-  --side-gap: 30px;          /* отступы от краёв экрана */
-  --block-height: 450px;     /* базовая высота */
-  --min-height: 520px;       /* защита от "узкой колбаски" */
-  --max-height: 95vh;        /* адаптивность по высоте */
+  --side-gap: 30px;
 
-  --bg-dark: #120016;        /* основной тёмный фон (не кислотный) */
-  --bg-deeper: #0a000e;      /* углубление */
+  --bg-dark: #120016;
+  --bg-deeper: #0a000e;
   --grid-size: 121px;
   --grid-line: color-mix(in hsl, #ffffff, transparent 82%);
 
-  /* ===== ГЕОМЕТРИЯ ===== */
   width: calc(100% - (var(--side-gap) * 2));
-  height: clamp(var(--min-height), var(--block-height), var(--max-height));
-  margin-inline: auto;
+  min-height: 520px;
+  margin: 30px auto;
 
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 
-  /* ===== ФОН ===== */
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(in hsl, var(--bg-dark), black 1%),
-      var(--bg-deeper)
-    );
+  /* background:
+  linear-gradient(
+    180deg,
+    color-mix(in hsl, var(--bg-dark), black 1%),
+    var(--bg-deeper)
+  ); */
 
-  /* ===== BORDER ===== */
-  border: 1px solid color-mix(in hsl, black, #ffffff 12%);
-  border-radius: 20px;
-
-  /* ===== SHADOW (глубокий, но не грязный) ===== */
-  box-shadow:
-    0 18px 25px rgba(0, 0, 0, 0.65),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-
-    margin: 30px 0px 30px 0px
+  background: transparent;
+  border: 1px solid grey;
 }
 
 /* ===== СЛОЙ С СЕТКОЙ (АНАЛОГ body::before) ===== */
-.vis-modes-area::before {
+/* .vis-modes-area::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -60,15 +46,18 @@
     0 calc(var(--grid-size) * 0.32) /
     var(--grid-size) var(--grid-size);
 
-  /* Диагональная маска, мягче и темнее */
   mask: linear-gradient(-50deg, transparent 20%, white);
 
   pointer-events: none;
-  z-index: 0;
-}
+  z-index: -1;
+} */
 
 /* ===== КОНТЕНТ ВНУТРИ БЛОКА ===== */
 .vis-modes-area > * {
   position: relative;
   z-index: 0;
+}
+
+.vis-modes-area {
+  isolation: isolate;
 }
