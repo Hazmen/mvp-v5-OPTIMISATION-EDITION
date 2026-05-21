@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collatz Rework</title>
+
+    <!-- anime.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+    <link rel="stylesheet" href="main2.css">
+    <link rel="stylesheet" href="styles/celeste-like-bg2.css">
+    <link rel="stylesheet" href="styles/settings.css">
+    <link rel="stylesheet" href="styles/search-bar.css">
+    <link rel="stylesheet" href="styles/speed-modal.css">
+
+    <style>
+        :root {
+            --bl-width: 44px;
+            --bl-height: 44px;
+        }
+
+        #centerLine {
+            position: fixed;
+            background-color: white;
+            opacity: 0.7;
+            z-index: 9999;
+            pointer-events: none;
+            /* display: none; */
+        }
+
+        /* ===== PLAY / PAUSE SVG SMOOTHING ===== */
+
+        #start svg {
+            filter: drop-shadow(0 0 0.7px rgba(0,0,0,0.8));
+            transition: transform 120ms ease, filter 120ms ease;
+        }
+
+        #start:hover svg {
+            filter: drop-shadow(0 0 1px rgba(0,0,0,0.9));
+        }
+
+        #start:active svg {
+            transform: scale(0.96);
+        }
+
+        /* чуть смягчаем визуально сами фигуры */
+        #triangle,
+        #leftBar,
+        #rightBar {
+            shape-rendering: geometricPrecision;
+        }
+
+        .icon {
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+        stroke-width: 0;
+        stroke: currentColor;
+        fill: currentColor;
+        }
+    </style>
+</head>
+
+<body>
+<div class="controllers">
+    <div class="controllers-wrapper">
+
+        <button class="controller search">
+            <img src="svgs/search.svg" class="btn-img" style="filter: invert()">
+        </button>
+
+        <button class="controller reset">
+            <img src="svgs/loop.svg" alt="none" class="btn-img" style="filter: invert()">
+        </button>
+
+        <button id="start" class="start controller">
+            <img src="svgs/play3.svg" class="btn-img" style="margin-left: 4px;">            
+        </button>
+
+        <button class="controller immediatly" id="immediatly">
+            <img src="svgs/last.svg" class="btn-img" style="filter: invert()">
+        </button>
+
+        <button class="controller speedometer">
+            <img src="svgs/meter.svg" class="btn-img" style="filter: invert()">
+        </button>
+
+    </div>
+</div>
+
+<script>
+function drawCenterLine() {
+    const existingLine = document.getElementById('centerLine');
+    if (existingLine) existingLine.remove();
+
+    const centerX = document.documentElement.clientWidth / 2;
+    const height = document.documentElement.clientHeight;
+
+    const line = document.createElement('div');
+    line.id = 'centerLine';
+
+    line.style.left = `${centerX}px`;
+    line.style.top = '0';
+    line.style.width = '1px';
+    line.style.height = `${height}px`;
+    line.style.position = 'fixed';
+    line.style.pointerEvents = 'none';
+    line.style.zIndex = '999999';
+
+    document.body.appendChild(line);
+}
+
+window.addEventListener('load', drawCenterLine);
+window.addEventListener('resize', drawCenterLine);
+</script>
+</body>
+</html>

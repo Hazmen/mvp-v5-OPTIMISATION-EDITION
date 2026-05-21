@@ -1,0 +1,101 @@
+:root {
+    --grad-main: linear-gradient(135deg, #4a0090, #880083);
+    --border-main: rgb(147, 0, 205);
+    --inner-bg: linear-gradient(135deg, #36005f, #5a0056);
+    --border-light: rgb(190, 120, 255);
+}
+
+/* ===== MODAL ===== */
+.speed-modal {
+    position: fixed;
+    left: 50%;
+    bottom: 80px;
+    transform: translateX(-50%) translateY(20px);
+
+    width: min(250px, 60vw);
+    padding: 5px 6px;
+
+    background: var(--grad-main);
+    border: 3px solid var(--border-main);
+    border-radius: 30px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.speed-modal.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ===== TITLE ===== */
+.speed-title {
+    font-size: 1.15em; /* h3-ish */
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 1px;
+    margin: 0;
+    text-align: center;
+    color: white;
+}
+
+/* ===== ROW ===== */
+.speed-row {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+
+/* ===== RANGE ===== */
+.calc-speed {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    max-width: 260px;
+    height: 6px;
+
+    background: var(--inner-bg);
+    border-radius: 999px;
+    border: 2px solid var(--border-light);
+    outline: none;
+    box-sizing: border-box;
+}
+
+/* Thumb */
+::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid var(--border-main);
+    cursor: pointer;
+}
+
+::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid var(--border-main);
+    cursor: pointer;
+}
+
+/* ===== VALUE ===== */
+.speed-value {
+    font-size: 1em; /* h4-ish */
+    font-weight: 500;
+    white-space: nowrap;
+    text-align: center;
+}

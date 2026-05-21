@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error message</title>
+    <link rel="stylesheet" href="../styles/background.css">
+    <link rel="stylesheet" href="error-toast.css">
+
+    <style>
+@font-face {
+    font-family: trebuchet;
+    src: url("../styles/fonts/windows-xp-message-title-trebuchet-ms.otf");
+}
+
+@font-face {
+    font-family: pixelFont;
+    src: url("../styles/fonts/PixgamerRegular-OVD6A.ttf");
+}
+
+/* ===== WINDOW ===== */
+
+#errorWindow {
+    width: min(400px, 92vw);
+    border-radius: 5px 5px 0 0;
+    background: #4300E5;
+    padding: 4px;
+    image-rendering: pixelated;
+
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== TITLE BAR ===== */
+
+.main-error-layer {
+    font-family: trebuchet;
+    color: white;
+    font-weight: 1000;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 4px 6px;
+}
+
+.main-error-layer h2 {
+    margin: 0;
+    font-size: clamp(18px, 4vw, 22px);
+    text-shadow: 2px 1px black;
+}
+
+.close-error-win {
+    width: 32px;
+    height: 32px;
+    background: none;
+    border: none;
+    cursor: not-allowed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===== CONTENT ===== */
+
+.second-error-layer {
+    background: #EBE9D8;
+    font-family: pixelFont;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 10px;
+    gap: 12px;
+
+    /* ВАЖНО: растёт внутрь окна */
+    flex-grow: 1;
+}
+
+/* ===== MESSAGE ===== */
+
+.info-layer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.info-layer img {
+    flex-shrink: 0;
+}
+
+.info-layer h3 {
+    margin: 0;
+    color: #1e1e1e;
+    font-weight: 100;
+
+    font-size: clamp(14px, 3.5vw, 18px);
+    line-height: 1.2;
+}
+
+/* ===== BUTTON ===== */
+
+.ok-btn-div {
+    margin-top: auto; /* 🔥 КЛЮЧ */
+    display: flex;
+    justify-content: center;
+}
+
+.ok-btn-cover {
+    border: 1px solid black;
+}
+
+.ok-btn {
+    width: 80px;
+    height: 25px;
+
+    font-family: pixelFont;
+    background: none;
+    border: 1px solid white;
+    border-right: 2px solid grey;
+    border-bottom: 2px solid grey;
+
+    cursor: pointer;
+    color: #272D2A;
+}
+
+/* ===== MOBILE TWEAKS ===== */
+
+@media (max-width: 360px) {
+    .info-layer {
+        align-items: flex-start;
+    }
+
+    .info-layer img {
+        width: 32px;
+        height: 32px;
+    }
+
+    .ok-btn {
+        width: 70px;
+        height: 24px;
+    }
+}
+
+    </style>
+</head>
+<body>
+
+<div class="xp-error" id="errorWindow">
+    <div class="main-error-layer">
+        <h2>Error</h2>
+        <button class="close-error-win">
+            <img src="../assets/windowControllers.jpg" alt="" style="filter: contrast(.6); margin-right: 50px;" width="120px" height="32px">
+        </button>
+    </div>
+
+    <div class="second-error-layer">
+        <div class="info-layer">
+            <img src="../assets/error.png.jpg" alt="" width="38px" height="38px">
+            <h3>Please enter a positive number.</h3>
+        </div>
+        <div class="ok-btn-div">
+            <div class="ok-btn-cover"><button class="ok-btn">OK</button></div>
+            
+        </div>
+    </div>
+</div>
+
+
+<script>
+/* ==========================
+   КНОПКА ДЛЯ ПОКАЗА ОКНА
+========================== */
+
+const spawnBtn = document.createElement('button');
+spawnBtn.textContent = 'Show XP Error';
+spawnBtn.style.margin = '40px';
+document.body.appendChild(spawnBtn);
+
+/* ==========================
+   СОЗДАНИЕ ОКНА
+========================== */
+
+function createErrorWindow() {
+    const win = document.createElement('div');
+    win.id = 'errorWindow';
+
+    win.innerHTML = `
+        <div class="main-error-layer">
+            <h2>Error</h2>
+            <button class="close-error-win">
+                <img src="../assets/windowControllers.jpg"
+                     style="filter: contrast(.6); margin-right: 50px;"
+                     width="120" height="32">
+            </button>
+        </div>
+
+        <div class="second-error-layer">
+            <div class="info-layer">
+                <img src="../assets/error.png.jpg" width="38" height="38">
+                <h3>Please enter a positive number.</h3>
+            </div>
+
+            <div class="ok-btn-div">
+                <div class="ok-btn-cover">
+                    <button class="ok-btn">OK</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    /* ===== positioning ===== */
+    win.style.position = 'fixed';
+    win.style.left = '50%';
+    win.style.top = '50%';
+    win.style.transform = 'translate(-50%, -50%) scale(0.001)';
+    win.style.zIndex = '10000';
+
+    document.body.appendChild(win);
+
+    /* ===== open animation ===== */
+    win.animate(
+        [
+            { transform: 'translate(-50%, -50%) scale(0.001)' },
+            { transform: 'translate(-50%, -50%) scale(1)' }
+        ],
+        {
+            duration: 180,
+            easing: 'cubic-bezier(.15, .85, .25, 1)',
+            fill: 'forwards'
+        }
+    );
+
+    /* ===== close logic ===== */
+    const okBtn = win.querySelector('.ok-btn');
+    okBtn.addEventListener('click', () => closeWindow(win));
+}
+
+/* ==========================
+   ЗАКРЫТИЕ
+========================== */
+
+function closeWindow(win) {
+    const anim = win.animate(
+        [
+            { transform: 'translate(-50%, -50%) scale(1)' },
+            { transform: 'translate(-50%, -50%) scale(0.001)' }
+        ],
+        {
+            duration: 160,
+            easing: 'cubic-bezier(.4, 0, .6, .2)',
+            fill: 'forwards'
+        }
+    );
+
+    anim.onfinish = () => win.remove();
+}
+
+/* ==========================
+   СОБЫТИЕ
+========================== */
+
+spawnBtn.addEventListener('click', createErrorWindow);
+</script>
+
+
+<script src="error-toast.js"></script>
+</body>
+</html>

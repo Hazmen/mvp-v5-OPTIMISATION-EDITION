@@ -1,0 +1,76 @@
+@layer base {
+  body {
+    color: white;
+    color-scheme: light dark;
+
+    background: light-dark(#868686, #636363);
+
+    min-height: 100vh;
+
+  }
+
+  body::before {
+    --size: 120px;
+
+    --line: color-mix(in hsl, canvasText, transparent 60%);
+
+    content: '';
+
+    height: 100vh;
+
+    width: 100vw;
+
+    position: fixed;
+
+    background: linear-gradient(
+          90deg,
+          var(--line) 1px,
+          transparent 1px var(--size)
+        )
+        calc(var(--size) * 0.36) 50% / var(--size) var(--size),
+      linear-gradient(
+        var(--line) 1px,
+        transparent 1px var(--size)
+      ) 0%
+        calc(var(--size) * 0.32) / var(--size) var(--size);
+
+    mask: linear-gradient(-20deg, transparent 40%, white);
+
+    top: 0;
+
+    transform-style: flat;
+
+    pointer-events: none;
+
+    z-index: -1;
+  }
+}
+
+.number {
+    background: rgb(191, 191, 191);
+    color: black;
+}
+
+.play {
+    background: rgb(232, 232, 232);
+    &:hover {
+        background: #ffffff;
+        cursor: pointer;
+    }
+    color: black;
+    margin-left: 5px;
+}
+
+.chart-block {
+    width: 500px;
+    height: 300px;
+    border: 2px solid rgb(255, 255, 255);
+    margin-top: 10px;
+    background: rgba(161, 161, 161, 0.649)
+}
+
+.charts {
+  display: flex;
+  flex-direction: row;
+  gap: 40px;
+}

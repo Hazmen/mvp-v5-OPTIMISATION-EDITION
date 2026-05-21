@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collatz Explorer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 md:p-6"
+      style="background: radial-gradient(ellipse at 30% 0%, rgba(88,28,135,0.35) 0%, #0f0518 55%), #0f0518;">
+
+    <div class="w-full max-w-7xl glass-panel rounded-2xl overflow-hidden flex flex-col md:flex-row">
+
+        <!-- Left Column -->
+        <div class="flex-1 p-6 md:p-8 flex flex-col min-w-0">
+
+            <!-- Header -->
+            <header class="flex flex-wrap justify-between items-center gap-3 mb-5">
+                <h1 class="text-2xl md:text-3xl font-bold tracking-tight"
+                    style="background: linear-gradient(90deg, #d8b4fe, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    Collatz Explorer
+                </h1>
+                <div class="scale-toggle" id="scaleToggle">
+                    <button id="btnLinear" class="active" onclick="setScale('linear')">Linear</button>
+                    <button id="btnLog" onclick="setScale('log')">Log</button>
+                </div>
+            </header>
+
+            <!-- Controls -->
+            <div class="flex gap-3 mb-5">
+                <input type="text" id="input" value="27" placeholder="Enter number" class="run-input">
+                <button class="run-btn" id="runBtn">▶ Run</button>
+            </div>
+
+            <!-- Chart -->
+            <div class="relative w-full mb-5" style="flex: 1 1 0; min-height: 300px;">
+                <div id="chart" style="width:100%; height:100%; min-height:300px; border-radius:16px; overflow:hidden;
+                     box-shadow: 0 0 40px rgba(216,26,232,0.18), inset 0 0 0 1px rgba(139,92,246,0.1);"></div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-3 gap-3">
+                <div class="card-glow rounded-xl p-4 flex flex-col items-center text-center">
+                    <span class="text-purple-300 text-xs font-medium mb-1 uppercase tracking-wider">Total Steps</span>
+                    <span class="text-2xl md:text-3xl font-bold text-white" id="card-steps">111</span>
+                </div>
+                <div class="card-glow card-peak rounded-xl p-4 flex flex-col items-center text-center">
+                    <span class="text-purple-300 text-xs font-medium mb-1 uppercase tracking-wider">Peak Value</span>
+                    <div class="flex items-center gap-1 text-2xl md:text-3xl font-bold text-white">
+                        <span class="text-yellow-400" style="font-size:1.1em">★</span>
+                        <span id="card-peak">9,232</span>
+                    </div>
+                </div>
+                <div class="card-glow rounded-xl p-4 flex flex-col items-center text-center">
+                    <span class="text-purple-300 text-xs font-medium mb-1 uppercase tracking-wider">Growth Factor</span>
+                    <span class="text-2xl md:text-3xl font-bold text-white" id="card-growth">342x</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Statistics -->
+        <div class="w-full md:w-72 lg:w-80 flex flex-col p-6"
+             style="background: rgba(12,5,22,0.6); border-left: 1px solid rgba(255,255,255,0.05);">
+
+            <h2 class="text-lg font-bold text-white mb-4 pb-3"
+                style="border-bottom: 1px solid rgba(255,255,255,0.08);">Statistics</h2>
+
+            <div class="flex-1 overflow-y-auto text-sm space-y-0 pr-1">
+                <div class="stat-row"><span class="text-purple-300">Start Value</span><span class="font-semibold text-white" id="stat-start">27</span></div>
+                <div class="stat-row"><span class="text-purple-300">Total Steps</span><span class="font-semibold text-white" id="stat-steps">111</span></div>
+                <div class="stat-row"><span class="text-purple-300">Peak Value</span><span class="font-bold text-white text-base" id="stat-peak">9,232</span></div>
+                <div class="stat-row"><span class="text-purple-300">Peak Step</span><span class="font-semibold text-white" id="stat-peak-step">77</span></div>
+                <div class="stat-row"><span class="text-purple-300">Growth</span><span class="font-semibold text-white" id="stat-growth">342x</span></div>
+                <div class="stat-row"><span class="text-purple-300">Time to Peak</span><span class="font-semibold text-white" id="stat-time-peak">77 steps</span></div>
+                <div class="stat-row">
+                    <span class="text-purple-300">Longest Streak</span>
+                    <div class="flex gap-2 text-white font-semibold">
+                        <span id="stat-streak-up">7↑</span>
+                        <span class="text-purple-400">/</span>
+                        <span id="stat-streak-down">6↓</span>
+                    </div>
+                </div>
+                <div class="stat-row"><span class="text-purple-300">Average Value</span><span class="font-semibold text-white" id="stat-avg">1,144</span></div>
+                <div class="stat-row"><span class="text-purple-300">Median Value</span><span class="font-semibold text-white" id="stat-median">86</span></div>
+            </div>
+
+            <!-- Pie Chart -->
+            <div class="mt-6 pt-5" style="border-top: 1px solid rgba(255,255,255,0.08);">
+                <div class="flex items-center justify-between">
+                    <div class="flex flex-col gap-1 text-sm">
+                        <div class="flex items-center gap-2">
+                            <div class="w-2.5 h-2.5 rounded-sm" style="background:#06b6d4"></div>
+                            <span class="text-cyan-400 font-semibold">Even</span>
+                            <span class="text-white font-normal" id="pct-even">72%</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-2.5 h-2.5 rounded-sm" style="background:#7c3aed"></div>
+                            <span class="text-purple-400 font-semibold">Odd</span>
+                            <span class="text-white font-normal" id="pct-odd">28%</span>
+                        </div>
+                    </div>
+                    <div class="relative" style="width:88px;height:88px;">
+                        <canvas id="pieChart"></canvas>
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <span class="text-xs font-bold text-white" id="pie-center-text">72%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script(simplified).js"></script>
+</body>
+</html>

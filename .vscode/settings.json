@@ -1,0 +1,11 @@
+{
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/vendor": true,
+    "**/.venv": true,
+    "**/dist": true,
+    "**/.claude": true,
+    "**/extra": false
+  },
+  "liveServer.settings.port": 5501
+}

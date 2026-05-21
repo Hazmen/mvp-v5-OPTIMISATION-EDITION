@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collatz Explorer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fontsource.org/files/inter/400.css" rel="stylesheet">
+    <link href="https://fontsource.org/files/inter/600.css" rel="stylesheet">
+    <link href="https://fontsource.org/files/inter/700.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f0518;
+            color: #e0e0e0;
+        }
+        .glass-panel {
+            background: rgba(30, 15, 45, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+        .card-glow {
+            background: linear-gradient(135deg, rgba(45, 20, 65, 0.8) 0%, rgba(20, 10, 35, 0.9) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.1);
+        }
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #8b5cf6;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #8b5cf6;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a0b2e; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4c1d95; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6d28d9; 
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 md:p-8 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-900/40 via-[#0f0518] to-[#0f0518]">
+
+    <div class="w-full max-w-7xl glass-panel rounded-2xl overflow-hidden flex flex-col md:flex-row">
+        
+        <!-- Left Column: Chart & Summary -->
+        <div class="flex-1 p-6 md:p-8 flex flex-col">
+            <header class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-200 to-purple-400">Collatz Explorer</h1>
+                <!-- Scale Toggle -->
+                <div class="flex items-center space-x-2 bg-purple-900/30 rounded-full p-1 border border-purple-500/30">
+                    <button id="btn-linear" class="px-4 py-1 rounded-full text-sm font-medium bg-purple-600 text-white shadow-lg transition-all">Linear</button>
+                    <button id="btn-log" class="px-4 py-1 rounded-full text-sm font-medium text-purple-300 hover:text-white transition-all">Log</button>
+                </div>
+            </header>
+
+            <!-- Main Chart Area -->
+            <div class="relative w-full h-64 md:h-96 mb-6 bg-black/20 rounded-xl border border-white/5 p-4">
+                <canvas id="collatzChart"></canvas>
+                <!-- Custom Tooltip Simulation -->
+                <div id="peak-tooltip" class="absolute hidden bg-purple-900/90 border border-purple-400/50 text-white text-xs rounded-lg p-2 shadow-xl pointer-events-none z-10 flex items-center gap-2 backdrop-blur-sm">
+                    <span class="text-yellow-400">★</span>
+                    <div>
+                        <div class="font-bold text-sm" id="tooltip-value">9232</div>
+                        <div class="text-purple-200 text-[10px]">Peak value</div>
+                    </div>
+                    <div class="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-purple-900/90 absolute -bottom-1.5 left-1/2 transform -translate-x-1/2"></div>
+                </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-3 gap-4 mt-auto">
+                <div class="card-glow rounded-xl p-4 flex flex-col items-center justify-center text-center">
+                    <span class="text-purple-300 text-sm font-medium mb-1">Total Steps</span>
+                    <span class="text-3xl font-bold text-white" id="card-steps">111</span>
+                </div>
+                <div class="card-glow rounded-xl p-4 flex flex-col items-center justify-center text-center ring-1 ring-purple-500/40">
+                    <span class="text-purple-300 text-sm font-medium mb-1">Peak Value</span>
+                    <div class="flex items-center gap-2 text-3xl font-bold text-white">
+                        <span class="text-yellow-400 text-xl">★</span>
+                        <span id="card-peak">9,232</span>
+                    </div>
+                </div>
+                <div class="card-glow rounded-xl p-4 flex flex-col items-center justify-center text-center">
+                    <span class="text-purple-300 text-sm font-medium mb-1">Growth Factor</span>
+                    <span class="text-3xl font-bold text-white" id="card-growth">342x</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Detailed Statistics -->
+        <div class="w-full md:w-80 bg-[#130824] border-l border-white/5 p-6 flex flex-col">
+            <h2 class="text-xl font-bold text-white mb-6 border-b border-white/10 pb-2">Statistics</h2>
+            
+            <div class="space-y-4 text-sm flex-1 overflow-y-auto pr-2">
+                <div class="flex justify-between items-center">
+                    <span class="text-purple-300">Start Value</span>
+                    <span class="font-semibold text-white" id="stat-start">27</span>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-3">
+                    <span class="text-purple-300">Total Steps</span>
+                    <span class="font-semibold text-white" id="stat-steps">111</span>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-3">
+                    <span class="text-purple-300">Peak Value</span>
+                    <span class="font-bold text-white text-lg" id="stat-peak">9,232</span>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-3">
+                    <span class="text-purple-300">Peak Step</span>
+                    <span class="font-semibold text-white" id="stat-peak-step">77</span>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-3">
+                    <span class="text-purple-300">Growth</span>
+                    <span class="font-semibold text-white" id="stat-growth">342x</span>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-3">
+                    <span class="text-purple-300">Time to Peak</span>
+                    <span class="font-semibold text-white" id="stat-time-peak">77 steps</span>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-3">
+                    <span class="text-purple-300">Longest Streak</span>
+                    <div class="flex gap-2 text-white font-semibold">
+                        <span id="stat-streak-up">7↑</span>
+                        <span class="text-purple-400">/</span>
+                        <span id="stat-streak-down">6↓</span>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-3">
+                    <span class="text-purple-300">Average Value</span>
+                    <span class="font-semibold text-white" id="stat-avg">1,144</span>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-3">
+                    <span class="text-purple-300">Median Value</span>
+                    <span class="font-semibold text-white" id="stat-median">86</span>
+                </div>
+            </div>
+
+            <!-- Pie Chart Section -->
+            <div class="mt-8 pt-6 border-t border-white/10">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex flex-col">
+                        <span class="text-cyan-400 font-bold">Even <span class="text-white font-normal" id="pct-even">72%</span></span>
+                        <span class="text-purple-400 font-bold mt-1">Odd <span class="text-white font-normal" id="pct-odd">28%</span></span>
+                    </div>
+                    <div class="w-24 h-24 relative">
+                        <canvas id="pieChart"></canvas>
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <span class="text-xs font-bold text-white" id="pie-center-text">72%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex gap-4 text-xs text-purple-300 justify-center">
+                    <div class="flex items-center gap-1">
+                        <div class="w-3 h-3 bg-cyan-500 rounded-sm"></div> Even
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <div class="w-3 h-3 bg-purple-700 rounded-sm"></div> Odd
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. Logic: Collatz Sequence Calculation ---
+        function calculateCollatz(n) {
+            let sequence = [n];
+            let current = n;
+            let streakUp = 0;
+            let streakDown = 0;
+            let maxStreakUp = 0;
+            let maxStreakDown = 0;
+
+            while (current !== 1) {
+                if (current % 2 === 0) {
+                    current = current / 2;
+                    streakDown++;
+                    streakUp = 0;
+                    if (streakDown > maxStreakDown) maxStreakDown = streakDown;
+                } else {
+                    current = (3 * current) + 1;
+                    streakUp++;
+                    streakDown = 0;
+                    if (streakUp > maxStreakUp) maxStreakUp = streakUp;
+                }
+                sequence.push(current);
+            }
+            return { sequence, maxStreakUp, maxStreakDown };
+        }
+
+        function getStats(sequence) {
+            const peak = Math.max(...sequence);
+            const peakIndex = sequence.indexOf(peak);
+            const sum = sequence.reduce((a, b) => a + b, 0);
+            const sorted = [...sequence].sort((a, b) => a - b);
+            const median = sorted.length % 2 === 0 
+                ? (sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2 
+                : sorted[Math.floor(sorted.length / 2)];
+            
+            const evens = sequence.filter(n => n % 2 === 0).length;
+            const odds = sequence.length - evens;
+
+            return {
+                totalSteps: sequence.length - 1,
+                peakValue: peak,
+                peakStep: peakIndex,
+                growth: (peak / sequence[0]).toFixed(0),
+                timeToPeak: peakIndex,
+                average: Math.round(sum / sequence.length),
+                median: Math.round(median),
+                evenCount: evens,
+                oddCount: odds,
+                evenPct: ((evens / sequence.length) * 100).toFixed(0),
+                oddPct: ((odds / sequence.length) * 100).toFixed(0)
+            };
+        }
+
+        // --- 2. Initialization ---
+        const startValue = 27;
+        const { sequence, maxStreakUp, maxStreakDown } = calculateCollatz(startValue);
+        const stats = getStats(sequence);
+
+        // --- 3. Update DOM Elements ---
+        document.getElementById('card-steps').textContent = stats.totalSteps;
+        document.getElementById('card-peak').textContent = stats.peakValue.toLocaleString();
+        document.getElementById('card-growth').textContent = `${stats.growth}x`;
+
+        document.getElementById('stat-start').textContent = startValue;
+        document.getElementById('stat-steps').textContent = stats.totalSteps;
+        document.getElementById('stat-peak').textContent = stats.peakValue.toLocaleString();
+        document.getElementById('stat-peak-step').textContent = stats.peakStep;
+        document.getElementById('stat-growth').textContent = `${stats.growth}x`;
+        document.getElementById('stat-time-peak').textContent = `${stats.timeToPeak} steps`;
+        document.getElementById('stat-streak-up').textContent = `${maxStreakUp}↑`;
+        document.getElementById('stat-streak-down').textContent = `${maxStreakDown}↓`;
+        document.getElementById('stat-avg').textContent = stats.average.toLocaleString();
+        document.getElementById('stat-median').textContent = Math.round(stats.median).toLocaleString();
+
+        document.getElementById('pct-even').textContent = `${stats.evenPct}%`;
+        document.getElementById('pct-odd').textContent = `${stats.oddPct}%`;
+        document.getElementById('pie-center-text').textContent = `${stats.evenPct}%`;
+
+        // --- 4. Chart.js Configuration ---
+        
+        // Line Chart
+        const ctx = document.getElementById('collatzChart').getContext('2d');
+        
+        // Gradient for the line
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(59, 130, 246, 0.5)'); // Blue top
+        gradient.addColorStop(1, 'rgba(139, 92, 246, 0.0)'); // Purple bottom transparent
+
+        const labels = sequence.map((_, i) => i);
+        
+        const chartConfig = {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Value',
+                    data: sequence,
+                    borderColor: '#60a5fa', // blue-400
+                    backgroundColor: gradient,
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    pointHoverRadius: 6,
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#60a5fa',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index',
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        enabled: false, // We will use custom logic or just rely on hover
+                        external: function(context) {
+                            const tooltip = document.getElementById('peak-tooltip');
+                            const tooltipValue = document.getElementById('tooltip-value');
+                            
+                            if (context.tooltip.opacity === 0) {
+                                tooltip.style.display = 'none';
+                                return;
+                            }
+
+                            const activePoint = context.tooltip.dataPoints[0];
+                            const value = activePoint.raw;
+                            
+                            // Only show custom tooltip for peak value to match design
+                            if (value === stats.peakValue) {
+                                tooltip.style.display = 'flex';
+                                tooltipValue.textContent = value.toLocaleString();
+                                
+                                // Positioning
+                                const chartCanvas = context.chart.canvas;
+                                const chartRect = chartCanvas.getBoundingClientRect();
+                                const point = activePoint.element;
+                                
+                                // Calculate position relative to container
+                                const top = point.y - 60; 
+                                const left = point.x - (tooltip.offsetWidth / 2);
+                                
+                                tooltip.style.top = `${top}px`;
+                                tooltip.style.left = `${left}px`;
+                            } else {
+                                tooltip.style.display = 'none';
+                            }
+                        }
+                    },
+                    annotation: {
+                        // Would need chartjs-plugin-annotation for permanent markers, 
+                        // but the tooltip hover effect mimics the image well enough for this demo.
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                        ticks: { color: '#9ca3af', maxTicksLimit: 8 }
+                    },
+                    y: {
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                        ticks: { color: '#9ca3af' },
+                        type: 'linear',
+                        beginAtZero: true
+                    }
+                }
+            }
+        };
+
+        const collatzChart = new Chart(ctx, chartConfig);
+
+        // Toggle Logic
+        const btnLinear = document.getElementById('btn-linear');
+        const btnLog = document.getElementById('btn-log');
+        let isLinear = true;
+
+        btnLinear.addEventListener('click', () => {
+            if (!isLinear) {
+                isLinear = true;
+                btnLinear.classList.add('bg-purple-600', 'text-white', 'shadow-lg');
+                btnLinear.classList.remove('text-purple-300');
+                btnLog.classList.remove('bg-purple-600', 'text-white', 'shadow-lg');
+                btnLog.classList.add('text-purple-300');
+                
+                collatzChart.options.scales.y.type = 'linear';
+                collatzChart.update();
+            }
+        });
+
+        btnLog.addEventListener('click', () => {
+            if (isLinear) {
+                isLinear = false;
+                btnLog.classList.add('bg-purple-600', 'text-white', 'shadow-lg');
+                btnLog.classList.remove('text-purple-300');
+                btnLinear.classList.remove('bg-purple-600', 'text-white', 'shadow-lg');
+                btnLinear.classList.add('text-purple-300');
+
+                collatzChart.options.scales.y.type = 'logarithmic';
+                collatzChart.update();
+            }
+        });
+
+        // Pie Chart
+        const pieCtx = document.getElementById('pieChart').getContext('2d');
+        new Chart(pieCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Even', 'Odd'],
+                datasets: [{
+                    data: [stats.evenCount, stats.oddCount],
+                    backgroundColor: ['#06b6d4', '#5b21b6'], // cyan-500, purple-800
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: false }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
+
