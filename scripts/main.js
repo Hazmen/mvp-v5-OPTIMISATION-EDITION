@@ -1,3 +1,4 @@
+// ===== Runtime state =====
 let inpValue = 0n;
 let isComputing = false;
 let computationResult = null;
@@ -5,15 +6,16 @@ let isRunning = false;
 let currentStepIndex = 0;
 let currentDisplayedMax = null;
 let userScrolled = false;
+let visibleItems = [];
+let playMode = true;
+let delay = 10;
+let isResetted = false;
 
+// ===== Workers =====
 const worker = new Worker('./webWorker/collatz.worker.js');
 const chartWorker = new Worker('./webWorker/chart.worker.js');
 
-
-
-let visibleItems = []
-
-
+// ===== DOM references =====
 const inp = document.querySelector('.number-input');
 const start = document.querySelector('.start');
 const calcArea = document.querySelector('.results-calculation-area');
@@ -27,14 +29,15 @@ const skipThat = document.querySelector('.immediatly');
 let copyBtn = document.querySelector('.copy-btn');
 let copyLabel = document.querySelector('.copy-label');
 
+// ===== Media =====
 const errorAudio = new Audio('assets/audio/error.m4a');
 errorAudio.preload = 'auto';
 errorAudio.volume = 1;
 
+// ===== Speed controls =====
 const speedSliders = document.querySelectorAll('.calc-speed');
 let curspeedElements = document.querySelectorAll('.speed-value');
 
-let delay = 10;
 const speedMap = {
     '5': 1,
     '4': 10,
@@ -45,48 +48,49 @@ const speedMap = {
 
 function updateSpeedDisplay() {
     curspeedElements = document.querySelectorAll('.speed-value');
-    curspeedElements.forEach(element => {
+    curspeedElements.forEach((element) => {
         element.innerText = delay + ' ms';
     });
 }
 
-speedSliders.forEach(slider => {
+speedSliders.forEach((slider) => {
     slider.addEventListener('input', (event) => {
         const sliderValue = event.target.value;
+
         if (speedMap.hasOwnProperty(sliderValue)) {
             delay = speedMap[sliderValue];
-            speedSliders.forEach(s => {
-                if (s !== event.target) {
-                    s.value = sliderValue;
+
+            speedSliders.forEach((linkedSlider) => {
+                if (linkedSlider !== event.target) {
+                    linkedSlider.value = sliderValue;
                 }
             });
+
             updateSpeedDisplay();
         }
     });
 });
 
-speedSliders.forEach(slider => {
+speedSliders.forEach((slider) => {
     slider.value = '4';
 });
+
 updateSpeedDisplay();
 
-
-
-
+// ===== Copy results =====
 copyBtn.addEventListener('click', () => {
     if (computationResult && computationResult.spisok) {
         const textToCopy = computationResult.spisok.join('\n');
+
         navigator.clipboard.writeText(textToCopy).then(() => {
-            // Optional: Show feedback to user
             copyLabel.textContent = 'Copied!';
             setTimeout(() => {
                 copyLabel.textContent = 'Copy';
             }, 2000);
-        }).catch(err => {
+        }).catch((err) => {
             console.error('Failed to copy: ', err);
         });
     } else {
-        // Handle case when there's no computation result
         copyLabel.textContent = 'No data';
         setTimeout(() => {
             copyLabel.textContent = 'Copy';
@@ -100,49 +104,44 @@ copyBtn.addEventListener('click', () => {
 //     let currentX = 0;
 //     let currentY = 0;
 //     let dragging = false;
-
+//
 //     handle.style.cursor = 'grab';
-
+//
 //     handle.addEventListener('pointerdown', e => {
 //         dragging = true;
 //         handle.setPointerCapture(e.pointerId);
 //         handle.style.cursor = 'grabbing';
-
+//
 //         startX = e.clientX - currentX;
 //         startY = e.clientY - currentY;
 //     });
-
+//
 //     handle.addEventListener('pointermove', e => {
 //         if (!dragging) return;
-
+//
 //         currentX = e.clientX - startX;
 //         currentY = e.clientY - startY;
-
+//
 //         win.style.transform =
 //             `translate(-50%, -50%) translate3d(${currentX}px, ${currentY}px, 0) scale(1)`;
 //     });
-
+//
 //     handle.addEventListener('pointerup', stop);
 //     handle.addEventListener('pointercancel', stop);
-
+//
 //     function stop() {
 //         dragging = false;
 //         handle.style.cursor = 'grab';
 //     }
 // }
 
-
-
-/* ==========================
-   СОЗДАНИЕ ОКНА
-========================== */
-
+// ===== Error window =====
 function createErrorWindow() {
     errorAudio.currentTime = 0;
     errorAudio.play().catch(() => {});
+
     const win = document.createElement('div');
     win.id = 'errorWindow';
-    
 
     win.innerHTML = `
         <div class="main-error-layer">
@@ -168,7 +167,6 @@ function createErrorWindow() {
         </div>
     `;
 
-    // ===== positioning =====
     win.style.position = 'fixed';
     win.style.left = '50%';
     win.style.top = '50%';
@@ -178,11 +176,8 @@ function createErrorWindow() {
     win.style.backfaceVisibility = 'hidden';
 
     document.body.appendChild(win);
-
-    // 🔥 ПРИНУДИТЕЛЬНЫЙ LAYOUT (КЛЮЧ)
     win.getBoundingClientRect();
 
-    // ===== open animation =====
     win.animate(
         [
             { transform: 'translate(-50%, -50%) scale(0.001)' },
@@ -198,15 +193,10 @@ function createErrorWindow() {
     // const header = win.querySelector('.main-error-layer');
     // makeDraggable(win, header);
 
-    // ===== close logic =====
     const okBtn = win.querySelector('.ok-btn');
-    setTimeout(() => {closeWindow(win)}, 2500);
+    setTimeout(() => { closeWindow(win); }, 2500);
     okBtn.addEventListener('click', () => closeWindow(win));
 }
-
-/* ==========================
-   CLOSE (SMOOTH)
-========================== */
 
 function closeWindow(win) {
     win.style.willChange = 'transform';
@@ -229,7 +219,7 @@ function closeWindow(win) {
     };
 }
 
-let playMode = true;
+// ===== Main button state =====
 function changeMainButtonMode(playMode) {
     if (playMode) {
         return start.innerHTML = '<img src="svgs/play3.svg" class="btn-img">';
@@ -238,6 +228,7 @@ function changeMainButtonMode(playMode) {
     }
 }
 
+// ===== Font size setting =====
 const fontSizeSet = document.getElementById('fontSizeSet');
 let curFontSize = document.querySelector('.fontRangeArea p');
 
@@ -246,10 +237,10 @@ if (fontSizeSet) {
         calcArea.style.fontSize = fontSizeSet.value + 'px';
         curFontSize.innerText = fontSizeSet.value + 'px';
     });
-};
+}
 
+// ===== Reset button =====
 const resetButton = document.querySelector('.controller.reset');
-let isResetted = false;
 resetButton.addEventListener('click', () => {
     isResetted = true;
 });
@@ -258,6 +249,7 @@ if (!inp || !start || !calcArea || !currentNumber || !stepsCount || !maxNumber |
     console.error('Required elements not found!');
 }
 
+// ===== Worker result handling =====
 worker.onmessage = (e) => {
     computationResult = e.data;
 
@@ -266,7 +258,7 @@ worker.onmessage = (e) => {
     visibleItems = [];
     calcArea.innerHTML = '';
 
-    // chart.clear(); // 🔥 важно
+    // chart.clear();
     // chartWorker.postMessage({
     //     spisok: computationResult.spisok
     // });
@@ -277,35 +269,35 @@ worker.onmessage = (e) => {
     processDelayCalc(computationResult.spisok, delay);
 };
 
-
+// ===== Scroll tracking =====
 calcArea.addEventListener('scroll', () => {
-    // Проверяем, находится ли пользователь вблизи нижней части области прокрутки
     const isAtBottom = calcArea.scrollHeight - calcArea.scrollTop <= calcArea.clientHeight + 3;
 
     if (!isAtBottom) {
-        userScrolled = true; // Пользователь прокрутил вверх
+        userScrolled = true;
     } else {
-        userScrolled = false; // Пользователь вернулся вниз
+        userScrolled = false;
     }
 });
 
+// ===== Rendering =====
 function renderAllRemaining(list) {
-    for (let i = currentStepIndex; i < list.length; i++) { // Исправляем начальный индекс для согласованности
+    for (let i = currentStepIndex; i < list.length; i++) {
         const num = list[i];
-
         const p = document.createElement('p');
-        // Создаем span для индекса с классом
         const indexSpan = document.createElement('span');
-        indexSpan.className = 'step-index';
-        indexSpan.textContent = `${i}: `; // Добавляем индекс и двоеточие в span
 
-        p.appendChild(indexSpan); // Добавляем span в p
-        p.appendChild(document.createTextNode(num.toString())); // Добавляем текст числа после span
-        p.style.whiteSpace = 'nowrap'; // Применяем стиль к p, чтобы предотвратить перенос
+        indexSpan.className = 'step-index';
+        indexSpan.textContent = `${i}: `;
+
+        p.appendChild(indexSpan);
+        p.appendChild(document.createTextNode(num.toString()));
+        p.style.whiteSpace = 'nowrap';
+
         calcArea.appendChild(p);
     }
 
-    currentStepIndex = list.length + 1; // Обновляем currentStepIndex
+    currentStepIndex = list.length + 1;
     visibleItems = list.slice();
 
     if (list.length > 0) {
@@ -318,13 +310,10 @@ function renderAllRemaining(list) {
     isRunning = false;
     changeMainButtonMode(true);
 
-    // AUTO-SCROLL ADDITION
-    // Прокручиваем вниз только если пользователь не прокручивал вручную
     if (!userScrolled) {
         calcArea.scrollTop = calcArea.scrollHeight;
     }
-    // END AUTO-SCROLL ADDITION
-};
+}
 
 function processDelayCalc(list) {
     if (!isRunning) return;
@@ -346,8 +335,8 @@ function processDelayCalc(list) {
     visibleItems.push(currentNum);
 
     const p = document.createElement('p');
-
     const indexSpan = document.createElement('span');
+
     indexSpan.className = 'step-index';
     indexSpan.textContent = `${currentStepIndex + 1}: `;
 
@@ -360,10 +349,7 @@ function processDelayCalc(list) {
     currentNumber.textContent = currentNum.toString();
     stepsCount.textContent = currentStepIndex.toString();
 
-    if (
-        currentDisplayedMax === null ||
-        currentNum > currentDisplayedMax
-    ) {
+    if (currentDisplayedMax === null || currentNum > currentDisplayedMax) {
         currentDisplayedMax = currentNum;
         maxNumber.textContent = currentDisplayedMax.toString();
     }
@@ -379,7 +365,7 @@ function processDelayCalc(list) {
     }, delay);
 }
 
-
+// ===== Input value sync =====
 const updateInpValue = () => {
     inpValue = BigInt(inp.value || '');
     firstNumberLengthBlock.innerText = String(inpValue).length + ' digits';
@@ -389,8 +375,10 @@ const updateInpValue = () => {
         firstNumberLengthBlock.innerText = String(inpValue).length - 1 + ' digits';
     }
 };
+
 updateInpValue();
 
+// ===== Reset flow =====
 resetButton.addEventListener('click', () => {
     isRunning = false;
     isComputing = false;
@@ -408,13 +396,12 @@ resetButton.addEventListener('click', () => {
     changeMainButtonMode(true);
 });
 
-
+// ===== Start and pause =====
 start.addEventListener('click', () => {
     if (inp.value.trim() === '') {
         createErrorWindow();
         changeMainButtonMode(play);
     }
-
 
     const hasResult = computationResult !== null;
     const isFinished =
@@ -452,65 +439,62 @@ skipThat.addEventListener('click', () => {
     if (!computationResult) return;
 
     isRunning = false;
-
     renderAllRemaining(computationResult.spisok);
 });
 
-
-
-inp.addEventListener('beforeinput', e => {
+inp.addEventListener('beforeinput', (e) => {
     if (e.data && !/^[0-9]+$/.test(e.data)) {
         e.preventDefault();
     }
 });
+
 inp.addEventListener('input', updateInpValue);
-
-
 
 // ===== DOM helpers =====
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const $$$ = (id) => document.getElementById(id);
 
-// ===== DOM elements =====
+// ===== Input controls =====
 const randomBtn = $('.random-input');
 const clearBtn = $('.clear-input');
 const saveBtn = $('.save-input');
 const input = $('.number-input');
 
-// ===== constants =====
+// ===== Constants =====
 const MAX_RANDOM =
-  9999999999999999999999999999999999999999999999999999999n;
+    9999999999999999999999999999999999999999999999999999999n;
 
-// ===== random BigInt generator =====
+// ===== Random BigInt generator =====
 function randomBigInt(maxExclusive) {
-  const digits = maxExclusive.toString().length;
-  let result;
+    const digits = maxExclusive.toString().length;
+    let result;
 
-  do {
-    let str = '';
-    for (let i = 0; i < digits; i++) {
-      str += Math.floor(Math.random() * 10);
-    }
-    result = BigInt(str);
-  } while (result === 0n || result >= maxExclusive);
+    do {
+        let str = '';
 
-  return result;
+        for (let i = 0; i < digits; i++) {
+            str += Math.floor(Math.random() * 10);
+        }
+
+        result = BigInt(str);
+    } while (result === 0n || result >= maxExclusive);
+
+    return result;
 }
 
-// ===== events =====
+// ===== Input actions =====
 randomBtn.addEventListener('click', () => {
-  const value = randomBigInt(MAX_RANDOM);
-  input.value = value.toString();
+    const value = randomBigInt(MAX_RANDOM);
+    input.value = value.toString();
 
-  input.dispatchEvent(new Event('input', { bubbles: true }));
-  input.focus();
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.focus();
 });
 
 clearBtn.addEventListener('click', () => {
-  input.value = '';
+    input.value = '';
 
-  input.dispatchEvent(new Event('input', { bubbles: true }));
-  input.focus();
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.focus();
 });
-

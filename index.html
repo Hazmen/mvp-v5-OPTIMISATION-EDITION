@@ -4,45 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Collatz Rework</title>
+
+    <!-- Vendor -->
     <script src="./node_modules/echarts/dist/echarts.min.js"></script>
+
+    <!-- Base styles -->
     <link rel="stylesheet" href="styles/main.css">
 
-    <!-- BACKGROUNDS -->
+    <!-- Background styles -->
     <!-- <link rel="stylesheet" href="styles/background.css"> -->
     <!-- <link rel="stylesheet" href="styles/celeste-like-bg1.css"> -->
     <link rel="stylesheet" href="styles/celeste-like-bg2.css">
 
-    <!-- Подключаем CSS для панели настроек -->
+    <!-- UI panels -->
     <link rel="stylesheet" href="styles/settings.css">
     <link rel="stylesheet" href="styles/search-bar.css">
     <link rel="stylesheet" href="styles/speed-modal.css">
 
     <!-- <link rel="stylesheet" href="styles/vis-area.css"> -->
 
-    <!-- Подключаем CSS для работы области отображения данных (vis-mode-area) и работы самих режимов -->
+    <!-- Modes area -->
     <link rel="stylesheet" href="styles/vis-mode-area.css">
     <link rel="stylesheet" href="styles/modes-container.css">
 
-    <!-- TAILWIND -->
+    <!-- Utility styles -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
         #centerLine {
             background: white;
-            opacity: 1;
+            opacity: 0;
         }
     </style>
 </head>
 <body>
     <app-shell>
         <h2 style="color: white;">Put your number here :)</h2>
-        <!-- MAIN INPUT LAYER -->
+
+        <!-- Main input layer -->
         <div class="main-controllers-container">
             <div class="inp-main-row">
-                <input type="text" class="number-input" value="27" name="number-input" id="number-input" placeholder="Input number here...">
+                <input
+                    type="text"
+                    class="number-input"
+                    value="27"
+                    name="number-input"
+                    id="number-input"
+                    placeholder="Input number here..."
+                >
             </div>
-            
-            <!-- INPUT FEATURES -->
+
+            <!-- Input actions -->
             <div class="inp-secondary-row">
                 <button class="clear-input inp-controller-main" id="inp-clear">
                     <img src="svgs/clear.svg" alt="clear" class="inp-con-img">
@@ -58,44 +70,43 @@
             </div>
         </div>
 
-        <!-- SPEED SLIDER -->
+        <!-- Speed slider -->
         <label for="speed" style="font-family: Arial; font-weight: 500; margin-top: 20px; margin-bottom: 10px; color: white;">Speed</label>
-        <input type="range" name="speed" id="calc-speed" class="calc-speed" min="1" max="5" step="1" value="4" style="width: 300px; margin-bottom: 10px;">
+        <input
+            type="range"
+            name="speed"
+            id="calc-speed"
+            class="calc-speed"
+            min="1"
+            max="5"
+            step="1"
+            value="4"
+            style="width: 300px; margin-bottom: 10px;"
+        >
         <span class="speed-value" style="font-family: Arial; font-weight: 500; margin-top: 0px;">10 ms</span>
-
 
         <h1 class="modes-title-main">Modes</h1>
 
-        
-        <!-- MODES CAROUSEL -->
+        <!-- Modes carousel -->
         <div class="carousel-toogle">
             <div class="arrows-layer">
-                <button class="toogle-left toogle-arrow">‹</button>
+                <button class="toogle-left toogle-arrow"><</button>
                 <div class="toogle-label modes-label"></div>
-                <button class="toogle-right toogle-arrow">›</button>
+                <button class="toogle-right toogle-arrow">></button>
             </div>
             <div class="dots-layer" id="modes-dots"></div>
         </div>
 
-
         <div class="modes-general">
             <div class="modes-viewport">
                 <div class="vis-mode active" data-mode="sequence">
-                    
-                </div>
 
-                <div class="vis-mode active" data-mode="chart">
-                    
                 </div>
-
-                <div class="vis-mode active" data-mode="chain">
-                    
-                </div>
-
-                <div class="vis-mode active" data-mode="map">
-                    
-                </div>
+                <div class="vis-mode active" data-mode="chart"></div>
+                <div class="vis-mode active" data-mode="chain"></div>
+                <div class="vis-mode active" data-mode="map"></div>
             </div>
+
             <div class="modes-rott">
                 <h2>Statistics</h2>
                 <div class="rott-stats-container">
@@ -111,9 +122,7 @@
             </div>
         </div>
 
-
-
-        <!-- RESULTS AREA -->
+        <!-- Results area -->
         <div class="text-results">
             <h3>The results:</h3>
             <div class="two-large-blocks">
@@ -126,7 +135,6 @@
                 </div>
 
                 <div class="stats-area">
-                    <!-- User number stats -->
                     <div class="firstNumberStatsBlock sblock blocks">
                         <p class="stat-p">Your number:</p>
                         <div class="firstNumber sblock stat-v">
@@ -139,10 +147,9 @@
                         </div>
                     </div>
 
-                    <!-- Current Number block -->
                     <div class="currentNumberBlock sblock blocks">
                         <h3 style="color: black;">Current Number</h3>
-                        <div class="currentNumber sblock ">None</div>
+                        <div class="currentNumber sblock">None</div>
                     </div>
 
                     <div class="calcResultsBlock sblock blocks">
@@ -154,11 +161,8 @@
                     </div>
                 </div>
             </div>
-
-            
         </div>
-        
-        
+
         <div class="controllers">
             <div class="controllers-wrapper" style="filter: invert();">
                 <button class="controller search">
@@ -180,19 +184,16 @@
                 <button class="controller speedometer">
                     <img src="svgs/meter.svg" alt="speed" class="btn-img">
                 </button>
-            </div>    
+            </div>
         </div>
 
         <!-- <button class="settings-area">
             <img src="assets/settings" alt="">
-
-
         </button> -->
 
-        <!-- HTML для панели настроек -->
+        <!-- Settings panel -->
         <div class="settings-container">
             <button class="settings-toggle" id="settingsToggle">
-                <!-- SVG шестеренки -->
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97 0-.33-.03-.66-.07-1l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.34-.07.67-.07 1 0 .33.03.65.07.97L2.46 14.6c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.31.61.22l2.49-1c.52.39 1.06.73 1.69.98l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.25 1.17-.59 1.69-.98l2.49 1c.22.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.66Z"/>
                 </svg>
@@ -206,20 +207,21 @@
                         <div class="fontRangeArea">
                             <input type="range" name="fontSize" id="fontSizeSet" min="2" max="124" value="16" step="2">
                             <p>16px</p>
-                        </div> 
+                        </div>
                     </div>
                 </div>
+
                 <div class="settings-section">
                     <h3>Display</h3>
                     <div class="settings-content">
                         <div class="speedRangeArea">
-                            <!-- <label for="speed" style="font-family: Arial; font-weight: 500; margin-top: 20px; color: white; margin-bottom: 10px;">Speed</label> <br> -->
                             <label for="speed" style="font-family: Arial; font-weight: 500; color: white; margin-bottom: 10px;">Calc Speed</label>
                             <input type="range" name="speed" id="calc-speed" class="calc-speed" min="1" max="5" step="1" value="4"> <br>
                             <span class="speed-value" style="color: #E0E0E0; font-family: Arial, Helvetica, monospace; font-size: 18px; font-weight: 500; margin: 0;">10 ms</span>
                         </div>
                     </div>
                 </div>
+
                 <div class="settings-section">
                     <h3>Audio</h3>
                     <div class="settings-content">
@@ -230,7 +232,6 @@
         </div>
 
         <div class="modal" id="modal">
-            <!-- SELECT -->
             <div class="select-wrap" id="selectWrap">
                 <div class="select-btn" id="selectBtn">
                     <span id="selectValue">step</span>
@@ -245,12 +246,10 @@
                 </div>
             </div>
 
-            <!-- INPUT -->
             <input class="modal-input" id="numInput" type="text" placeholder="123">
 
-            <!-- BUTTON -->
             <button class="modal-btn controller">
-                <img src="assets/search.png" alt="" class="btn-img-2"/>
+                <img src="assets/search.png" alt="" class="btn-img-2">
             </button>
         </div>
 
@@ -274,9 +273,9 @@
         </div>
     </app-shell>
 
-
+    <!-- App scripts -->
     <!-- <script src="input-buttons.js"></script> -->
-     <script src="scripts/modes/vis-mode-area.js" defer></script>
+    <script src="scripts/modes/vis-mode-area.js" defer></script>
     <script src="scripts/main.js" defer></script>
     <script src="scripts/modals.js" defer></script>
 
@@ -304,6 +303,6 @@
 
         window.addEventListener('load', drawCenterLine);
         window.addEventListener('resize', drawCenterLine);
-    </script>   
+    </script>
 </body>
 </html>

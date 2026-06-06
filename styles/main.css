@@ -9,6 +9,7 @@ body {
     margin: 0;
 }
 
+/* ===== App shell ===== */
 app-shell {
     display: flex;
     flex-direction: column;
@@ -18,6 +19,7 @@ app-shell {
     padding-bottom: 20vh;
 }
 
+/* ===== Form controls ===== */
 .number-input {
     border-radius: 10px;
     border: 2px solid #555555;
@@ -102,6 +104,7 @@ label[for="calc-speed"] {
     gap: 5px;
 }
 
+/* ===== Results area ===== */
 .results-calculation-area {
     border: 1px solid black;
     background: rgb(246, 246, 119);
@@ -412,7 +415,7 @@ label[for="calc-speed"] {
     filter: invert();
 }
 
-/* ===== COMPOUND INPUT SHELL ===== */
+/* ===== Compound input shell ===== */
 
 .main-controllers-container {
     display: inline-flex;
@@ -438,7 +441,7 @@ label[for="calc-speed"] {
     padding: 0 0 0 0;
 }
 
-/* ===== PRIMARY ROW ===== */
+/* ===== Primary row ===== */
 
 .inp-main-row {
     display: flex;
@@ -446,7 +449,7 @@ label[for="calc-speed"] {
     gap: 20px;
 }
 
-/* ===== SECONDARY BUTTONS ===== */
+/* ===== Secondary buttons ===== */
 
 .inp-secondary-row {
     display: flex;
@@ -455,7 +458,7 @@ label[for="calc-speed"] {
     padding-left: 0px;
 }
 
-/* ===== ICON BUTTONS INSIDE INPUT ===== */
+/* ===== Input icon buttons ===== */
 
 .inp-controller,
 .inp-controller-main {
@@ -505,7 +508,7 @@ label[for="calc-speed"] {
     src: url("../styles/fonts/PixgamerRegular-OVD6A.ttf");
 }
 
-/* ===== WINDOW ===== */
+/* ===== Error window ===== */
 
 #errorWindow {
     width: min(400px, 92vw);
@@ -518,7 +521,7 @@ label[for="calc-speed"] {
     flex-direction: column;
 }
 
-/* ===== TITLE BAR ===== */
+/* ===== Title bar ===== */
 
 .main-error-layer {
     font-family: trebuchet;
@@ -549,7 +552,7 @@ label[for="calc-speed"] {
     justify-content: center;
 }
 
-/* ===== CONTENT ===== */
+/* ===== Content ===== */
 
 .second-error-layer {
     background: #EBE9D8;
@@ -565,7 +568,7 @@ label[for="calc-speed"] {
     flex-grow: 1;
 }
 
-/* ===== MESSAGE ===== */
+/* ===== Message ===== */
 
 .info-layer {
     display: flex;
@@ -586,7 +589,7 @@ label[for="calc-speed"] {
     line-height: 1.2;
 }
 
-/* ===== BUTTON ===== */
+/* ===== Button ===== */
 
 .ok-btn-div {
     margin-top: auto; /* 🔥 КЛЮЧ */
@@ -612,7 +615,7 @@ label[for="calc-speed"] {
     color: #272D2A;
 }
 
-/* ===== MOBILE TWEAKS ===== */
+/* ===== Mobile tweaks ===== */
 
 @media (max-width: 360px) {
     .info-layer {

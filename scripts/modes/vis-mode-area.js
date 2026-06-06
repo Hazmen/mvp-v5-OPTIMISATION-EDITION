@@ -1,4 +1,4 @@
-// Конфигурация режимов
+// ===== Mode configuration =====
 const modes = [
     { id: 'sequence', name: 'Sequence' },
     { id: 'chart', name: 'Graph' },
@@ -9,14 +9,14 @@ const modes = [
 let currentIndex = 0;
 const totalModes = modes.length;
 
-// Элементы DOM
+// ===== DOM elements =====
 const modeLabel = document.querySelector('.modes-label');
 const leftArrow = document.querySelector('.toogle-left');
 const rightArrow = document.querySelector('.toogle-right');
 const dotsContainer = document.getElementById('modes-dots');
 const visModes = document.querySelectorAll('.vis-mode');
 
-// Создаём точки
+// ===== Dots =====
 function createDots() {
     dotsContainer.innerHTML = '';
 
@@ -40,18 +40,15 @@ function createDots() {
     });
 }
 
-// Функция обновления интерфейса
+// ===== UI state =====
 function updateMode(index) {
-    // Нормализуем индекс для бесконечной карусели
     const normalizedIndex = ((index % totalModes) + totalModes) % totalModes;
 
-    // Обновляем текст
     modeLabel.textContent = modes[normalizedIndex].name;
 
-    // Обновляем точки
     const dots = document.querySelectorAll('.mode-dot');
-    dots.forEach((dot, i) => {
-        if (i === normalizedIndex) {
+    dots.forEach((dot, dotIndex) => {
+        if (dotIndex === normalizedIndex) {
             dot.style.backgroundColor = 'white';
             dot.style.borderColor = 'white';
             dot.style.transform = 'scale(1.0)';
@@ -62,9 +59,9 @@ function updateMode(index) {
         }
     });
 
-    // Обновляем видимый режим визуализации
     visModes.forEach((mode) => {
         const modeId = mode.dataset.mode;
+
         if (modeId === modes[normalizedIndex].id) {
             mode.style.display = 'block';
             mode.style.animation = 'fadeIn 0.3s ease';
@@ -76,7 +73,7 @@ function updateMode(index) {
     currentIndex = normalizedIndex;
 }
 
-// Обработчики стрелок
+// ===== Navigation =====
 leftArrow.addEventListener('click', () => {
     updateMode(currentIndex - 1);
 });
@@ -85,7 +82,7 @@ rightArrow.addEventListener('click', () => {
     updateMode(currentIndex + 1);
 });
 
-// Добавляем анимацию появления в CSS
+// ===== Runtime styles =====
 const style = document.createElement('style');
 style.textContent = `
     @keyframes fadeIn {
@@ -99,11 +96,11 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// Инициализация
+// ===== Init =====
 createDots();
 updateMode(0);
 
-// Обработка клавиатуры
+// ===== Keyboard support =====
 document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft') {
         leftArrow.click();

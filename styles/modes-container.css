@@ -1,16 +1,11 @@
 .modes-viewport {
-  /* размеры области */
-  position: relative;
-  width: min(100% - 0px, 1400px);
-  max-width: none;
-  min-height: 360px;
-  /* margin: 0 0 40px; */
-  /* padding: 20px; */
-  color: white;
-  box-sizing: border-box;
-  
-  /* все остальное */
-  border-radius: 60px 60px 0px 0px;
+    position: relative;
+    width: min(100% - 0px, 1400px);
+    max-width: none;
+    min-height: 360px;
+    color: white;
+    box-sizing: border-box;
+    border-radius: 60px 60px 0 0;
 }
 
 body {
@@ -19,61 +14,51 @@ body {
 }
 
 body::-webkit-scrollbar {
-  display: none;
+    display: none;
 }
 
-/* Для браузера Firefox */
 html {
-  scrollbar-width: none;
+    scrollbar-width: none;
 }
 
 .modes-general {
-  /* размеры области */
-  position: relative;
-  width: min(100% - 32px, 1400px);
-  max-width: none;
-  min-height: 360px;
-  margin: 0 0 40px;
-  /* padding: 20px; */
-  color: white;
-  box-sizing: border-box;
-  
-  /* все остальное */
-
-
-  /* чоб видел */
-  border: 1px solid rgba(255, 255, 255, 0.353);
-  border-radius: 60px;
-  backdrop-filter: blur(10px);
+    position: relative;
+    width: min(100% - 32px, 1400px);
+    max-width: none;
+    min-height: 360px;
+    margin: 0 0 40px;
+    color: white;
+    box-sizing: border-box;
+    border: 1px solid rgba(255, 255, 255, 0.353);
+    border-radius: 60px;
+    backdrop-filter: blur(10px);
 }
 
 .modes-rott {
-  box-sizing: border-box;
-  border-radius: 0px 0px 60px 60px;
-  height: auto;
-  position: relative;
-  min-height: 360px;
-  background-color: rgba(19, 8, 36, 0.5); 
-
-  padding: 1.5rem;
+    box-sizing: border-box;
+    border-radius: 0 0 60px 60px;
+    height: auto;
+    position: relative;
+    min-height: 360px;
+    background-color: rgba(19, 8, 36, 0.5);
+    padding: 1.5rem;
 }
 
 .modes-rott h2 {
-  font-size: 1.25rem;
-  line-height: 1.75rem;
-  padding-bottom: 0.5rem;
-  margin: 0;
-  border-bottom: 1px solid darkgrey;
-  margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    padding-bottom: 0.5rem;
+    margin: 0 0 1.5rem;
+    border-bottom: 1px solid darkgrey;
 }
 
 .rott-stats-container {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  justify-content: center;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: center;
 }
 
 .rstat {
-  border-bottom: 1px solid darkgrey;
+    border-bottom: 1px solid darkgrey;
 }

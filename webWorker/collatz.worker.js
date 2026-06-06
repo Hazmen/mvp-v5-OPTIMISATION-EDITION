@@ -1,5 +1,4 @@
 self.onmessage = (e) => {
-    // 1. Получаем входное число
     let n = BigInt(e.data);
 
     const ONE = 1n;
@@ -11,7 +10,10 @@ self.onmessage = (e) => {
 
     while (n !== ONE) {
         spisok.push(n);
-        if (n > max) max = n;
+
+        if (n > max) {
+            max = n;
+        }
 
         if (n % TWO === 0n) {
             n = n / TWO;
@@ -22,7 +24,6 @@ self.onmessage = (e) => {
 
     spisok.push(ONE);
 
-    // 2. Отправляем результат обратно
     self.postMessage({
         spisok,
         steps: spisok.length,
